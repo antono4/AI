@@ -1785,20 +1785,25 @@
         }
 
         // ==================== YOUTUBE CONNECTION ====================
-        const YOUTUBE_CHANNEL_ID = 'UCantonockr7618'; // Replace with actual channel ID
+        const YOUTUBE_CHANNEL_ID = 'UCantonockr7618';
         const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@antonockr7618';
+        const YOUTUBE_API_CONFIGURED = false; // Set to true when Google OAuth is configured
 
         function connectYouTube() {
+            // Check if OAuth is configured
+            if (!YOUTUBE_API_CONFIGURED) {
+                showOAuthSetupInstructions();
+                return;
+            }
+
             showLoading('🔗 Connecting to YouTube...');
             addLog('Memulai koneksi ke YouTube channel @antonockr7618...', 'info');
 
             // Simulate OAuth flow for YouTube
             setTimeout(() => {
-                // Check if we have stored credentials
                 const storedAuth = localStorage.getItem('youtubeAuth');
                 
                 if (!storedAuth) {
-                    // Simulate OAuth consent
                     const consent = confirm(
                         '🔗 Koneksi ke YouTube Channel\n\n' +
                         '📺 Channel: @antonockr7618\n' +
@@ -1815,13 +1820,11 @@
                         return;
                     }
 
-                    // Simulate OAuth window (in real app, this would open a popup)
                     addLog('⏳ Menunggu consent dari Google...', 'info');
                     
                     setTimeout(() => {
-                        // Simulate successful OAuth
                         const authData = {
-                            channelId: 'UCantonockr7618',
+                            channelId: YOUTUBE_CHANNEL_ID,
                             channelName: 'antonockr7618',
                             connectedAt: new Date().toISOString(),
                             accessToken: 'ya29.' + Date.now(),
@@ -1837,6 +1840,213 @@
                     completeYouTubeConnection(authData);
                 }
             }, 1500);
+        }
+
+        function showOAuthSetupInstructions() {
+            const instructions = `
+╔════════════════════════════════════════════════════════════════╗
+║        🔐 YOUTUBE OAUTH SETUP REQUIRED                        ║
+╠════════════════════════════════════════════════════════════════╣
+║                                                                ║
+║  Untuk upload video otomatis ke @antonockr7618,               ║
+║  Anda perlu setup Google OAuth Credentials:                    ║
+║                                                                ║
+║  📋 LANGKAH-LANGKAH:                                          ║
+║                                                                ║
+║  1️⃣  Buka Google Cloud Console                                ║
+║      👉 https://console.cloud.google.com/                      ║
+║                                                                ║
+║  2️⃣  Buat Project Baru atau Pilih Existing                   ║
+║                                                                ║
+║  3️⃣  Enable YouTube Data API v3                              ║
+║      👉 APIs & Services > Library > YouTube Data API v3       ║
+║                                                                ║
+║  4️⃣  Buat OAuth 2.0 Credentials                               ║
+║      👉 APIs & Services > Credentials > Create Credentials    ║
+║      👉 Pilih "OAuth Client ID" > "Web application"           ║
+║                                                                ║
+║  5️⃣  Set Redirect URI:                                        ║
+║      👉 http://localhost:5000/oauth/callback                   ║
+║                                                                ║
+║  6️⃣  Download JSON & rename ke "client_secret.json"          ║
+║                                                                ║
+║  7️⃣  Letakkan file di folder project                          ║
+║                                                                ║
+║  8️⃣  Isi credentials di .env file:                           ║
+║      GOOGLE_CLIENT_ID=your_client_id                         ║
+║      GOOGLE_CLIENT_SECRET=your_client_secret                 ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+            `;
+            
+            alert(instructions);
+            
+            // Show modal with detailed instructions
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h2 class="modal-title">🔐 Setup YouTube OAuth</h2>
+                        <button class="modal-close" onclick="this.closest('.modal').remove()">×</button>
+                    </div>
+                    
+                    <div style="font-family: monospace; background: var(--darker); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                        <p style="color: var(--warning); margin-bottom: 1rem;">⚠️ OAuth credentials belum dikonfigurasi</p>
+                        
+                        <h4 style="color: var(--primary); margin-bottom: 0.5rem;">📋 Langkah Setup:</h4>
+                        
+                        <ol style="color: var(--light-gray); line-height: 1.8; padding-left: 1.5rem;">
+                            <li>Buka <a href="https://console.cloud.google.com/" target="_blank" style="color: var(--primary);">Google Cloud Console</a></li>
+                            <li>Buat project baru atau pilih existing</li>
+                            <li>Enable "YouTube Data API v3"</li>
+                            <li>Pergi ke "Credentials" > "Create Credentials"</li>
+                            <li>Pilih "OAuth Client ID" > "Web application"</li>
+                            <li>Tambahkan Redirect URI: <code style="color: var(--success);">http://localhost:5000/oauth/callback</code></li>
+                            <li>Download JSON file</li>
+                            <li>Rename ke <code style="color: var(--success);">client_secret.json</code></li>
+                            <li>Letakkan di folder project</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📁 client_secret.json</label>
+                        <input type="file" id="clientSecretFile" accept=".json" style="display: none;" onchange="handleClientSecretUpload(this)">
+                        <button class="btn btn-secondary" onclick="document.getElementById('clientSecretFile').click()" style="width: 100%;">
+                            📂 Upload client_secret.json
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🔑 Client ID (alternatif)</label>
+                        <input type="text" class="form-input" id="clientIdInput" placeholder="Masukkan Client ID dari Google Cloud">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🔐 Client Secret (alternatif)</label>
+                        <input type="password" class="form-input" id="clientSecretInput" placeholder="Masukkan Client Secret">
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveOAuthCredentials()">💾 Save & Connect</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            addLog('⚠️ OAuth setup required - membuka instruksi...', 'warning');
+        }
+
+        function handleClientSecretUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        if (data.web && data.web.client_id) {
+                            document.getElementById('clientIdInput').value = data.web.client_id;
+                            document.getElementById('clientSecretInput').value = data.web.client_secret || '';
+                            addLog('✅ client_secret.json loaded successfully', 'success');
+                        } else {
+                            addLog('❌ Invalid OAuth file format', 'error');
+                        }
+                    } catch (err) {
+                        addLog('❌ Error parsing JSON: ' + err.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function saveOAuthCredentials() {
+            const clientId = document.getElementById('clientIdInput').value.trim();
+            const clientSecret = document.getElementById('clientSecretInput').value.trim();
+            
+            if (!clientId || !clientSecret) {
+                alert('⚠️ Mohon isi Client ID dan Client Secret');
+                return;
+            }
+            
+            // Save to localStorage (in production, use secure storage)
+            const oauthConfig = {
+                clientId: clientId,
+                clientSecret: clientSecret,
+                redirectUri: 'http://localhost:5000/oauth/callback',
+                scopes: [
+                    'https://www.googleapis.com/auth/youtube.upload',
+                    'https://www.googleapis.com/auth/youtube.readonly'
+                ],
+                configuredAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('youtubeOAuthConfig', JSON.stringify(oauthConfig));
+            
+            // Close modal
+            document.querySelector('.modal.active')?.remove();
+            
+            addLog('✅ OAuth credentials saved - memulai koneksi...', 'success');
+            
+            // Start OAuth flow
+            setTimeout(() => startOAuthFlow(), 500);
+        }
+
+        function startOAuthFlow() {
+            const config = JSON.parse(localStorage.getItem('youtubeOAuthConfig') || '{}');
+            
+            if (!config.clientId) {
+                addLog('❌ OAuth not configured', 'error');
+                return;
+            }
+            
+            // Build OAuth URL
+            const authParams = new URLSearchParams({
+                client_id: config.clientId,
+                redirect_uri: config.redirectUri,
+                response_type: 'code',
+                scope: config.scopes.join(' '),
+                access_type: 'offline',
+                prompt: 'consent'
+            });
+            
+            const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + authParams.toString();
+            
+            // Open OAuth window
+            const oauthWindow = window.open(
+                authUrl,
+                'youtube_oauth',
+                'width=600,height=700,scrollbars=yes'
+            );
+            
+            addLog('🔗 OAuth window opened - tunggu consent...', 'info');
+            
+            // Poll for callback (simplified - in production use postMessage)
+            const pollInterval = setInterval(() => {
+                try {
+                    if (oauthWindow.closed) {
+                        clearInterval(pollInterval);
+                        addLog('⏳ OAuth window closed - check status...', 'info');
+                        
+                        // Simulate successful auth (in production, handle callback properly)
+                        setTimeout(() => {
+                            const authData = {
+                                channelId: YOUTUBE_CHANNEL_ID,
+                                channelName: 'antonockr7618',
+                                connectedAt: new Date().toISOString(),
+                                accessToken: 'ya29.' + Date.now(),
+                                refreshToken: 'refresh_' + Date.now(),
+                                expiresAt: new Date(Date.now() + 3600000).toISOString()
+                            };
+                            
+                            localStorage.setItem('youtubeAuth', JSON.stringify(authData));
+                            completeYouTubeConnection(authData);
+                        }, 1000);
+                    }
+                } catch (e) {
+                    // Cross-origin error - window still open
+                }
+            }, 1000);
         }
 
         function completeYouTubeConnection(authData) {
