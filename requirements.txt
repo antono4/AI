@@ -1,0 +1,29 @@
+# Web Framework
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# AI/ML
+openai>=1.12.0
+
+# Video Processing
+moviepy>=1.0.3
+Pillow>=10.2.0
+numpy>=1.26.0
+
+# Audio Processing
+gtts>=2.5.1
+pydub>=0.25.1
+
+# YouTube API
+google-api-python-client>=2.116.0
+google-auth-oauthlib>=1.2.0
+google-auth>=2.27.0
+
+# Utilities
+requests>=2.31.0
+python-dotenv>=1.0.1
+apscheduler>=3.10.4
+python-dateutil>=2.8.2
+
+# Scientific computing
+scipy>=1.12.0
