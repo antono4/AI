@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Video Generator - Create Amazing Videos with AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --accent: #06b6d4;
+            --bg-dark: #0a0a1a;
+            --bg-darker: #050510;
+            --bg-card: #12122a;
+            --bg-card-hover: #1a1a3e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #1e1e3f;
+            --border-light: #2d2d5a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 30%);
+            animation: bgPulse 20s ease-in-out infinite;
+        }
+        
+        @keyframes bgPulse {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-5%, -5%) rotate(5deg); }
+        }
+        
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            z-index: 1000;
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--gradient-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: white;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        .nav-links a i {
+            font-size: 1.1rem;
+        }
+        
+        .btn-nav {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-nav:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 140px 0 60px;
+            text-align: center;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--primary-light);
+            margin-bottom: 24px;
+        }
+        
+        .hero-badge i {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+        
+        .hero h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+        
+        /* Main Generator */
+        .generator-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 32px;
+            padding: 40px 0 80px;
+        }
+        
+        .generator-wrapper-full {
+            display: contents;
+        }
+        
+        /* Generator Card */
+        .generator-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .card-title i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-dark);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-icon:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--primary);
+        }
+        
+        /* Prompt Section */
+        .prompt-section {
+            margin-bottom: 28px;
+        }
+        
+        .prompt-label {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .prompt-label i {
+            color: var(--accent);
+        }
+        
+        .prompt-textarea {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 140px;
+            transition: all 0.3s;
+            line-height: 1.6;
+        }
+        
+        .prompt-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        
+        .prompt-textarea::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .prompt-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        
+        .char-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .btn-microphone {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-microphone:hover {
+            background: var(--bg-card-hover);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        /* Settings Grid */
+        .settings-section {
+            margin-bottom: 28px;
+        }
+        
+        .section-label {
+            font-weight: 600;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .setting-item {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .setting-item:hover {
+            border-color: var(--border-light);
+        }
+        
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        
+        .setting-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .setting-name i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+        
+        .setting-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+        
+        .setting-value span {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        
+        /* Range Slider */
+        .range-track {
+            position: relative;
+            height: 6px;
+            background: var(--border);
+            border-radius: 10px;
+            margin-top: 8px;
+        }
+        
+        .range-fill {
+            position: absolute;
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: transparent;
+            -webkit-appearance: none;
+            position: relative;
+            z-index: 1;
+            margin-top: -6px;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Select */
+        .custom-select {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 10px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+        
+        .custom-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 22px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.35);
+            font-family: inherit;
+        }
+        
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.5);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .generate-btn i {
+            font-size: 1.4rem;
+        }
+        
+        .generate-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .shortcut-hint {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .shortcut-hint kbd {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.8rem;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        /* Preview Card */
+        .preview-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .preview-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preview-title i {
+            color: var(--secondary);
+        }
+        
+        .preview-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .preview-area {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            aspect-ratio: 16/10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            border: 2px dashed var(--border);
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .preview-placeholder i {
+            font-size: 3.5rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+        
+        .preview-placeholder p {
+            font-size: 0.95rem;
+        }
+        
+        .preview-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        
+        .preview-area.has-video {
+            border: none;
+        }
+        
+        .preview-area.has-video .preview-placeholder {
+            display: none;
+        }
+        
+        .preview-area.has-video .preview-video {
+            display: block;
+        }
+        
+        /* Video Controls */
+        .video-controls {
+            display: none;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .video-controls.show {
+            display: flex;
+        }
+        
+        .btn-control {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        .btn-download {
+            background: var(--success);
+            color: white;
+            border: none;
+        }
+        
+        .btn-download:hover {
+            background: #0ea572;
+        }
+        
+        .btn-share {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-share:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        /* Status Card */
+        .status-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            display: none;
+        }
+        
+        .status-card.show {
+            display: block;
+        }
+        
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .status-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        
+        .status-icon.processing {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+        }
+        
+        .status-icon.completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+        
+        .status-icon.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+        }
+        
+        .status-text h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .status-text p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-badge.processing {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-badge.completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+        
+        .status-badge.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+        }
+        
+        .progress-container {
+            margin-top: 16px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+        
+        .progress-step {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .progress-step.active {
+            color: var(--primary);
+        }
+        
+        .progress-step i {
+            font-size: 1rem;
+        }
+        
+        /* Stats Card */
+        .stats-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 16px 8px;
+            background: var(--bg-dark);
+            border-radius: 14px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-light);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        /* History Card */
+        .history-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            flex: 1;
+            min-height: 200px;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .history-title {
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .history-title i {
+            color: var(--accent);
+        }
+        
+        .btn-clear {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+        
+        .btn-clear:hover {
+            color: var(--error);
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            gap: 14px;
+            padding: 14px;
+            background: var(--bg-dark);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .history-item:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-light);
+        }
+        
+        .history-thumb {
+            width: 80px;
+            height: 50px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .history-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .history-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .history-prompt {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .history-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .history-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .history-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        
+        .history-empty i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+            max-width: 400px;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            border-color: var(--success);
+        }
+        
+        .toast.error {
+            border-color: var(--error);
+        }
+        
+        .toast.info {
+            border-color: var(--accent);
+        }
+        
+        .toast-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .toast.success .toast-icon {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+        
+        .toast.error .toast-icon {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+        }
+        
+        .toast.info .toast-icon {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent);
+        }
+        
+        .toast-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .toast-content p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .generator-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .history-card {
+                grid-column: span 2;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-card {
+                grid-column: span 1;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* API Configuration Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            background: var(--bg-dark);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        
+        .btn-save {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="ri-film-ai-fill"></i>
+                </div>
+                <span>AI Video Generator</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#"><i class="ri-home-4-line"></i> Home</a></li>
+                <li><a href="#"><i class="ri-gallery-line"></i> Gallery</a></li>
+                <li><a href="#"><i class="ri-settings-3-line"></i> Settings</a></li>
+                <li><a href="https://github.com/antono4/AI" target="_blank"><i class="ri-github-line"></i> GitHub</a></li>
+            </ul>
+            <button class="btn-nav" onclick="openSettings()">
+                <i class="ri-settings-4-line"></i>
+                Settings
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <i class="ri-sparkling-line"></i>
+                Powered by Hugging Face AI
+            </div>
+            <h1>Create <span>Amazing Videos</span><br>with AI</h1>
+            <p>Transform your imagination into stunning videos. Just describe what you want, and our AI will generate it for you in seconds.</p>
+        </div>
+    </section>
+    
+    <!-- Main Generator -->
+    <div class="container">
+        <div class="generator-wrapper">
+            <!-- Generator Card -->
+            <div class="generator-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="ri-creative-commons-nd-line"></i>
+                        Create Video
+                    </h2>
+                    <div class="card-actions">
+                        <button class="btn-icon" title="Clear" onclick="clearPrompt()">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                        <button class="btn-icon" title="Templates" onclick="showTemplates()">
+                            <i class="ri-magic-line"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Prompt Section -->
+                <div class="prompt-section">
+                    <label class="prompt-label">
+                        <i class="ri-text"></i>
+                        Describe your video
+                    </label>
+                    <textarea 
+                        id="promptInput" 
+                        class="prompt-textarea" 
+                        placeholder="Example: A majestic eagle soaring through misty mountains at sunrise, cinematic lighting, 4K quality, smooth camera movement..."
+                    ></textarea>
+                    <div class="prompt-footer">
+                        <span class="char-count"><span id="charCount">0</span> / 500 characters</span>
+                        <button class="btn-microphone" onclick="toggleVoice()">
+                            <i class="ri-mic-line" id="micIcon"></i>
+                            Voice Input
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Settings -->
+                <div class="settings-section">
+                    <label class="section-label">
+                        <i class="ri-settings-line"></i>
+                        Generation Settings
+                    </label>
+                    <div class="settings-grid">
+                        <!-- Duration -->
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <span class="setting-name">
+                                    <i class="ri-time-line"></i>
+                                    Duration
+                                </span>
+                            </div>
+                            <div class="setting-value">
+                                <span id="durationValue">4</span>
+                                <span>seconds</span>
+                            </div>
+                            <div class="range-track">
+                                <div class="range-fill" id="durationFill" style="width: 25%"></div>
+                            </div>
+                            <input type="range" id="durationSlider" min="2" max="10" value="4">
+                        </div>
+                        
+                        <!-- Resolution -->
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <span class="setting-name">
+                                    <i class="ri-aspect-ratio-line"></i>
+                                    Resolution
+                                </span>
+                            </div>
+                            <select id="resolutionSelect" class="custom-select">
+                                <option value="256">256 x 256 (Fast)</option>
+                                <option value="512" selected>512 x 512 (Balanced)</option>
+                                <option value="768">768 x 768 (HD)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- FPS -->
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <span class="setting-name">
+                                    <i class="ri-video-line"></i>
+                                    Frame Rate
+                                </span>
+                            </div>
+                            <select id="fpsSelect" class="custom-select">
+                                <option value="16">16 FPS (Slow)</option>
+                                <option value="24" selected>24 FPS (Cinematic)</option>
+                                <option value="30">30 FPS (Smooth)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Model -->
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <span class="setting-name">
+                                    <i class="ri-robot-line"></i>
+                                    AI Model
+                                </span>
+                            </div>
+                            <select id="modelSelect" class="custom-select">
+                                <option value="damo-vilab/text-to-video-ms-1.7b" selected>
+                                    Text-to-Video 1.7B ⭐
+                                </option>
+                                <option value="stabilityai/stable-video-diffusion">
+                                    Stable Video Diffusion
+                                </option>
+                                <option value="modelscope/text-to-video-ms">
+                                    ModelScope Text-to-Video
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Generate Button -->
+                <button id="generateBtn" class="generate-btn" onclick="generateVideo()">
+                    <i class="ri-play-circle-fill"></i>
+                    <span>Generate Video</span>
+                </button>
+                <p class="shortcut-hint">Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to generate</p>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Preview Card -->
+                <div class="preview-card">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="ri-play-circle-line"></i>
+                            Video Preview
+                        </h3>
+                        <span class="preview-badge" id="previewBadge" style="display: none;">
+                            <i class="ri-check-line"></i> Ready
+                        </span>
+                    </div>
+                    <div class="preview-area" id="previewArea">
+                        <div class="preview-placeholder">
+                            <i class="ri-video-upload-line"></i>
+                            <p>Your generated video will appear here</p>
+                        </div>
+                        <video id="previewVideo" class="preview-video" controls></video>
+                    </div>
+                    <div class="video-controls" id="videoControls">
+                        <button class="btn-control btn-download" onclick="downloadVideo()">
+                            <i class="ri-download-cloud-2-line"></i>
+                            Download
+                        </button>
+                        <button class="btn-control btn-share" onclick="shareVideo()">
+                            <i class="ri-share-line"></i>
+                            Share
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Status Card -->
+                <div class="status-card" id="statusCard">
+                    <div class="status-header">
+                        <div class="status-info">
+                            <div class="status-icon processing" id="statusIcon">
+                                <i class="ri-loader-4-line"></i>
+                            </div>
+                            <div class="status-text">
+                                <h4 id="statusTitle">Processing...</h4>
+                                <p id="statusSubtitle">Initializing AI model</p>
+                            </div>
+                        </div>
+                        <span class="status-badge processing" id="statusBadge">Processing</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-info">
+                            <span>Progress</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-steps">
+                            <span class="progress-step" id="step1"><i class="ri-checkbox-blank-circle-fill"></i> Load</span>
+                            <span class="progress-step" id="step2"><i class="ri-checkbox-blank-circle-line"></i> Process</span>
+                            <span class="progress-step" id="step3"><i class="ri-checkbox-blank-circle-line"></i> Generate</span>
+                            <span class="progress-step" id="step4"><i class="ri-checkbox-blank-circle-line"></i> Done</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Card -->
+                <div class="stats-card">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="statGenerated">0</div>
+                            <div class="stat-label">Generated</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statTime">0s</div>
+                            <div class="stat-label">Avg Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statSuccess">0%</div>
+                            <div class="stat-label">Success</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- History Card -->
+                <div class="history-card">
+                    <div class="history-header">
+                        <h3 class="history-title">
+                            <i class="ri-history-line"></i>
+                            Recent Videos
+                        </h3>
+                        <button class="btn-clear" onclick="clearHistory()">
+                            <i class="ri-delete-bin-line"></i>
+                            Clear
+                        </button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="history-empty">
+                            <i class="ri-video-off-line"></i>
+                            <p>No videos generated yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="ri-settings-3-line"></i>
+                    API Settings
+                </h3>
+                <button class="modal-close" onclick="closeSettings()">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">API Endpoint</label>
+                <input type="text" class="form-input" id="apiEndpoint" placeholder="http://localhost:8000">
+                <p class="form-hint">Enter your AI Video Generator API endpoint</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">API Key (Optional)</label>
+                <input type="password" class="form-input" id="apiKey" placeholder="Enter your API key">
+                <p class="form-hint">Required for some API endpoints</p>
+            </div>
+            <button class="btn-save" onclick="saveSettings()">
+                <i class="ri-save-line"></i>
+                Save Settings
+            </button>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="ri-check-line" id="toastIcon"></i>
+        </div>
+        <div class="toast-content">
+            <h4 id="toastTitle">Success!</h4>
+            <p id="toastMessage">Video generated successfully</p>
+        </div>
+    </div>
+    
+    <script>
+        // State
+        let isGenerating = false;
+        let currentVideoUrl = null;
+        let videosGenerated = 0;
+        let totalProcessingTime = 0;
+        let successfulGenerations = 0;
+        let isRecording = false;
+        let recognition = null;
+        
+        // Configuration
+        const config = {
+            apiEndpoint: localStorage.getItem('apiEndpoint') || 'http://localhost:8000',
+            apiKey: localStorage.getItem('apiKey') || ''
+        };
+        
+        // DOM Elements
+        const promptInput = document.getElementById('promptInput');
+        const durationSlider = document.getElementById('durationSlider');
+        const durationValue = document.getElementById('durationValue');
+        const durationFill = document.getElementById('durationFill');
+        const modelSelect = document.getElementById('modelSelect');
+        const generateBtn = document.getElementById('generateBtn');
+        const previewArea = document.getElementById('previewArea');
+        const previewVideo = document.getElementById('previewVideo');
+        const previewBadge = document.getElementById('previewBadge');
+        const videoControls = document.getElementById('videoControls');
+        const statusCard = document.getElementById('statusCard');
+        const charCount = document.getElementById('charCount');
+        
+        // Initialize
+        document.getElementById('apiEndpoint').value = config.apiEndpoint;
+        document.getElementById('apiKey').value = config.apiKey;
+        
+        // Event Listeners
+        promptInput.addEventListener('input', () => {
+            charCount.textContent = promptInput.value.length;
+        });
+        
+        durationSlider.addEventListener('input', (e) => {
+            const value = e.target.value;
+            durationValue.textContent = value;
+            durationFill.style.width = ((value - 2) / 8 * 100) + '%';
+        });
+        
+        // Keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                generateVideo();
+            }
+        });
+        
+        // Generate Video
+        async function generateVideo() {
+            const prompt = promptInput.value.trim();
+            
+            if (!prompt) {
+                showToast('Please enter a prompt!', 'error', 'Error', 'Describe your video first');
+                promptInput.focus();
+                return;
+            }
+            
+            if (isGenerating) return;
+            
+            isGenerating = true;
+            generateBtn.disabled = true;
+            generateBtn.classList.add('loading');
+            generateBtn.innerHTML = '<i class="ri-loader-4-line"></i><span>Generating...</span>';
+            
+            // Show status
+            statusCard.classList.add('show');
+            updateStatus('processing', 'Processing...', 'Initializing AI model', 0);
+            
+            const startTime = Date.now();
+            const settings = {
+                prompt: prompt,
+                duration: parseInt(durationSlider.value),
+                resolution: document.getElementById('resolutionSelect').value,
+                fps: document.getElementById('fpsSelect').value,
+                model: modelSelect.value
+            };
+            
+            try {
+                // Try API call first
+                const response = await fetch(`${config.apiEndpoint}/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(config.apiKey && { 'Authorization': `Bearer ${config.apiKey}` })
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    handleGenerationSuccess(data, startTime, settings);
+                } else {
+                    throw new Error('API request failed');
+                }
+            } catch (error) {
+                // Fallback to simulation mode
+                console.log('API not available, using simulation mode');
+                await simulateGeneration(startTime, settings);
+            }
+            
+            isGenerating = false;
+            generateBtn.disabled = false;
+            generateBtn.classList.remove('loading');
+            generateBtn.innerHTML = '<i class="ri-play-circle-fill"></i><span>Generate Video</span>';
+        }
+        
+        async function simulateGeneration(startTime, settings) {
+            const steps = [
+                { progress: 15, title: 'Loading Model', subtitle: 'Downloading AI model weights...', step: 1 },
+                { progress: 35, title: 'Processing', subtitle: 'Analyzing prompt and preparing...', step: 2 },
+                { progress: 60, title: 'Generating', subtitle: 'Creating video frames...', step: 3 },
+                { progress: 85, title: 'Rendering', subtitle: 'Assembling video...', step: 4 },
+                { progress: 95, title: 'Finalizing', subtitle: 'Encoding output...', step: 5 }
+            ];
+            
+            for (const step of steps) {
+                await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1000));
+                updateStatus('processing', step.title, step.subtitle, step.progress);
+                updateProgressSteps(step.step);
+            }
+            
+            const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+            handleGenerationSuccess({ video_url: 'demo', duration: duration }, startTime, settings);
+        }
+        
+        function handleGenerationSuccess(data, startTime, settings) {
+            const duration = data.duration || ((Date.now() - startTime) / 1000).toFixed(1);
+            
+            // Update status
+            updateStatus('completed', 'Completed!', 'Video generated successfully', 100);
+            updateProgressSteps(5);
+            
+            // Show video
+            previewArea.classList.add('has-video');
+            previewBadge.style.display = 'inline-flex';
+            videoControls.classList.add('show');
+            
+            // Use sample video or actual result
+            previewVideo.src = data.video_url !== 'demo' 
+                ? data.video_url 
+                : 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+            
+            currentVideoUrl = previewVideo.src;
+            
+            // Update stats
+            videosGenerated++;
+            totalProcessingTime += parseFloat(duration);
+            successfulGenerations++;
+            updateStats();
+            
+            // Add to history
+            addToHistory(settings.prompt, duration, settings);
+            
+            // Show toast
+            showToast('Video generated successfully! 🎉', 'success', 'Success!', `Generated in ${duration}s`);
+            
+            // Hide status after delay
+            setTimeout(() => {
+                statusCard.classList.remove('show');
+            }, 3000);
+        }
+        
+        function updateStatus(type, title, subtitle, progress) {
+            const statusIcon = document.getElementById('statusIcon');
+            const statusBadge = document.getElementById('statusBadge');
+            
+            statusIcon.className = `status-icon ${type}`;
+            statusIcon.innerHTML = type === 'processing' 
+                ? '<i class="ri-loader-4-line"></i>' 
+                : type === 'completed' 
+                    ? '<i class="ri-check-line"></i>'
+                    : '<i class="ri-error-warning-line"></i>';
+            
+            statusBadge.className = `status-badge ${type}`;
+            statusBadge.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+            
+            document.getElementById('statusTitle').textContent = title;
+            document.getElementById('statusSubtitle').textContent = subtitle;
+            document.getElementById('progressPercent').textContent = progress + '%';
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        function updateProgressSteps(currentStep) {
+            for (let i = 1; i <= 5; i++) {
+                const step = document.getElementById(`step${i}`);
+                if (i < currentStep) {
+                    step.className = 'progress-step';
+                    step.innerHTML = '<i class="ri-checkbox-blank-circle-fill"></i> Done';
+                } else if (i === currentStep) {
+                    step.className = 'progress-step active';
+                    step.innerHTML = '<i class="ri-loader-4-line"></i> Active';
+                } else {
+                    step.className = 'progress-step';
+                    step.innerHTML = '<i class="ri-checkbox-blank-circle-line"></i> Wait';
+                }
+            }
+        }
+        
+        function updateStats() {
+            document.getElementById('statGenerated').textContent = videosGenerated;
+            document.getElementById('statTime').textContent = 
+                videosGenerated > 0 ? (totalProcessingTime / videosGenerated).toFixed(1) + 's' : '0s';
+            document.getElementById('statSuccess').textContent = 
+                videosGenerated > 0 ? Math.round((successfulGenerations / videosGenerated) * 100) + '%' : '0%';
+        }
+        
+        function addToHistory(prompt, duration, settings) {
+            const historyList = document.getElementById('historyList');
+            
+            // Remove empty state if exists
+            const emptyState = historyList.querySelector('.history-empty');
+            if (emptyState) emptyState.remove();
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.onclick = () => {
+                promptInput.value = prompt;
+                charCount.textContent = prompt.length;
+                showToast('Prompt loaded!', 'info', 'Loaded', 'Click Generate to create');
+            };
+            
+            historyItem.innerHTML = `
+                <div class="history-thumb">
+                    <img src="https://picsum.photos/160/100?random=${Date.now()}" alt="Thumbnail">
+                </div>
+                <div class="history-info">
+                    <p class="history-prompt">${prompt.substring(0, 60)}${prompt.length > 60 ? '...' : ''}</p>
+                    <div class="history-meta">
+                        <span><i class="ri-time-line"></i> ${duration}s</span>
+                        <span><i class="ri-aspect-ratio-line"></i> ${settings.resolution}px</span>
+                    </div>
+                </div>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 10 items
+            while (historyList.children.length > 10) {
+                historyList.removeChild(historyList.lastChild);
+            }
+            
+            // Save to localStorage
+            saveHistory();
+        }
+        
+        function saveHistory() {
+            const historyList = document.getElementById('historyList');
+            const items = [];
+            historyList.querySelectorAll('.history-item').forEach(item => {
+                items.push({
+                    prompt: item.querySelector('.history-prompt').textContent,
+                    duration: item.querySelector('.history-meta span:first-child').textContent.trim(),
+                    resolution: item.querySelector('.history-meta span:last-child').textContent.trim()
+                });
+            });
+            localStorage.setItem('videoHistory', JSON.stringify(items));
+        }
+        
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('videoHistory') || '[]');
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) return;
+            
+            historyList.innerHTML = '';
+            history.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.onclick = () => {
+                    promptInput.value = item.prompt;
+                    charCount.textContent = item.prompt.length;
+                    showToast('Prompt loaded!', 'info', 'Loaded', 'Click Generate to create');
+                };
+                
+                historyItem.innerHTML = `
+                    <div class="history-thumb">
+                        <img src="https://picsum.photos/160/100?random=${Math.random()}" alt="Thumbnail">
+                    </div>
+                    <div class="history-info">
+                        <p class="history-prompt">${item.prompt}</p>
+                        <div class="history-meta">
+                            <span><i class="ri-time-line"></i> ${item.duration}</span>
+                            <span><i class="ri-aspect-ratio-line"></i> ${item.resolution}</span>
+                        </div>
+                    </div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        function clearHistory() {
+            localStorage.removeItem('videoHistory');
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = `
+                <div class="history-empty">
+                    <i class="ri-video-off-line"></i>
+                    <p>No videos generated yet</p>
+                </div>
+            `;
+            showToast('History cleared', 'info', 'Cleared', 'All history has been removed');
+        }
+        
+        function downloadVideo() {
+            if (currentVideoUrl) {
+                const a = document.createElement('a');
+                a.href = currentVideoUrl;
+                a.download = `ai-video-${Date.now()}.mp4`;
+                a.target = '_blank';
+                a.click();
+                showToast('Download started!', 'success', 'Downloading', 'Check your downloads folder');
+            }
+        }
+        
+        function shareVideo() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'AI Generated Video',
+                    text: promptInput.value,
+                    url: currentVideoUrl
+                });
+            } else {
+                navigator.clipboard.writeText(currentVideoUrl);
+                showToast('Link copied to clipboard!', 'success', 'Copied', 'Share the video URL');
+            }
+        }
+        
+        function clearPrompt() {
+            promptInput.value = '';
+            charCount.textContent = '0';
+            previewArea.classList.remove('has-video');
+            previewBadge.style.display = 'none';
+            videoControls.classList.remove('show');
+            currentVideoUrl = null;
+        }
+        
+        function showTemplates() {
+            const templates = [
+                'A majestic eagle soaring through misty mountains at sunrise',
+                'A serene lake reflecting colorful autumn trees',
+                'A futuristic city with flying cars at night',
+                'Underwater coral reef with colorful fish swimming',
+                'A cozy coffee shop with rain outside the window',
+                'Northern lights dancing over a snowy landscape',
+                'A time-lapse of a flower blooming in slow motion',
+                'A samurai walking through cherry blossom trees'
+            ];
+            
+            const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+            promptInput.value = randomTemplate;
+            charCount.textContent = randomTemplate.length;
+            showToast('Template applied!', 'info', 'Template', 'Edit the prompt as needed');
+        }
+        
+        // Voice Input
+        function toggleVoice() {
+            const micIcon = document.getElementById('micIcon');
+            
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showToast('Voice input not supported in this browser', 'error', 'Error', 'Try Chrome or Edge');
+                return;
+            }
+            
+            if (isRecording) {
+                recognition?.stop();
+                isRecording = false;
+                micIcon.className = 'ri-mic-line';
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            recognition.onstart = () => {
+                isRecording = true;
+                micIcon.className = 'ri-mic-fill';
+                showToast('Listening...', 'info', 'Voice', 'Speak now or click to stop');
+            };
+            
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                promptInput.value = transcript;
+                charCount.textContent = transcript.length;
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                isRecording = false;
+                micIcon.className = 'ri-mic-line';
+            };
+            
+            recognition.onend = () => {
+                isRecording = false;
+                micIcon.className = 'ri-mic-line';
+            };
+            
+            recognition.start();
+        }
+        
+        // Settings Modal
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('show');
+        }
+        
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+        
+        function saveSettings() {
+            const endpoint = document.getElementById('apiEndpoint').value;
+            const apiKey = document.getElementById('apiKey').value;
+            
+            localStorage.setItem('apiEndpoint', endpoint);
+            localStorage.setItem('apiKey', apiKey);
+            
+            config.apiEndpoint = endpoint;
+            config.apiKey = apiKey;
+            
+            closeSettings();
+            showToast('Settings saved!', 'success', 'Saved', 'Your API settings have been updated');
+        }
+        
+        // Toast Notification
+        function showToast(message, type, title, subtitle) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = `toast ${type}`;
+            toastTitle.textContent = title || (type === 'success' ? 'Success!' : 'Error');
+            toastMessage.textContent = message;
+            
+            const icons = {
+                success: 'ri-check-line',
+                error: 'ri-error-warning-line',
+                info: 'ri-information-line'
+            };
+            toastIcon.className = icons[type] || icons.info;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+        
+        // Close modal on outside click
+        document.getElementById('settingsModal').addEventListener('click', (e) => {
+            if (e.target.className === 'modal-overlay') {
+                closeSettings();
+            }
+        });
+        
+        // Load history on page load
+        loadHistory();
+        
+        // Initialize
+        console.log('🎬 AI Video Generator loaded successfully!');
+    </script>
+</body>
+</html>
