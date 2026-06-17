@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Video Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .hero-video {
+            margin: 40px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(123, 47, 247, 0.3);
+            max-width: 800px;
+        }
+        
+        .hero-video img {
+            width: 100%;
+            display: block;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(123, 47, 247, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #00d4ff;
+        }
+        
+        .feature-card p {
+            color: #a0a0a0;
+            line-height: 1.6;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(123, 47, 247, 0.1);
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+        
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(123, 47, 247, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        .code-demo {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0;
+            overflow-x: auto;
+        }
+        
+        .code-demo pre {
+            color: #a0ffa0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .code-demo .comment {
+            color: #6a9955;
+        }
+        
+        .code-demo .keyword {
+            color: #c586c0;
+        }
+        
+        .code-demo .string {
+            color: #ce9178;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 60px;
+        }
+        
+        footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        
+        .models {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        
+        .model-badge {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 AI Video Generator</h1>
+            <p class="subtitle">Generate stunning videos from text prompts using state-of-the-art diffusion models</p>
+        </header>
+        
+        <div class="hero-video">
+            <img src="https://images.unsplash.com/photo-1626379953822-baec19c3accd?w=800&h=400&fit=crop" alt="AI Video Generation">
+        </div>
+        
+        <div class="models">
+            <span class="model-badge">🤗 damo-vilab/text-to-video-ms-1.7b</span>
+            <span class="model-badge">⚡ stabilityai/stable-video-diffusion</span>
+            <span class="model-badge">🔮 modelscope/text-to-video-ms</span>
+        </div>
+        
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3>Fast API</h3>
+                <p>Production-ready REST API built with FastAPI. Handle multiple generation requests with async job management.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <h3>CLI Interface</h3>
+                <p>Easy-to-use command-line tool for quick video generation directly from your terminal.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🐳</div>
+                <h3>Docker Ready</h3>
+                <p>Containerized deployment with GPU support. Run anywhere with Docker and Docker Compose.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🧪</div>
+                <h3>Tested & Reliable</h3>
+                <p>Comprehensive unit tests ensure reliability. CI/CD ready for production deployments.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>Configurable</h3>
+                <p>Fine-tune generation parameters. Control video duration, resolution, and model selection.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>High Quality</h3>
+                <p>State-of-the-art diffusion models deliver professional-quality video output.</p>
+            </div>
+        </section>
+        
+        <section class="code-demo">
+            <h3 style="margin-bottom: 20px; color: #00d4ff;">Quick Start</h3>
+            <pre><span class="comment"># Clone the repository</span>
+<span class="keyword">git clone</span> https://github.com/antono4/AI.git
+<span class="keyword">cd</span> AI
+
+<span class="comment"># Install dependencies</span>
+<span class="keyword">pip install</span> -r requirements.txt
+
+<span class="comment"># Generate a video via CLI</span>
+<span class="keyword">video-gen</span> generate <span class="string">"A cat playing piano in a jazz club"</span>
+
+<span class="comment"># Start the API server</span>
+<span class="keyword">video-gen</span> serve</pre>
+        </section>
+        
+        <section class="code-demo">
+            <h3 style="margin-bottom: 20px; color: #00d4ff;">API Usage</h3>
+            <pre><span class="comment"># Start server</span>
+<span class="keyword">uvicorn</span> src.api.server:app --host 0.0.0.0 --port 8000
+
+<span class="comment"># Generate video via API</span>
+<span class="keyword">curl</span> -X POST http://localhost:8000/generate \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{"prompt": "A sunset over the ocean", "duration": 5}'</span>
+
+<span class="comment"># Check job status</span>
+<span class="keyword">curl</span> http://localhost:8000/jobs/{job_id}</pre>
+        </section>
+        
+        <section class="cta-section">
+            <h2>Ready to Create Amazing Videos?</h2>
+            <p style="color: #a0a0a0; max-width: 500px; margin: 0 auto;">
+                Start generating professional videos with AI today. 
+                It's free and open source!
+            </p>
+            <div class="btn-group">
+                <a href="https://github.com/antono4/AI" class="btn btn-primary">📦 View on GitHub</a>
+                <a href="https://github.com/antono4/AI#readme" class="btn btn-secondary">📖 Read Docs</a>
+            </div>
+        </section>
+        
+        <footer>
+            <p>
+                Built with ❤️ using <a href="https://huggingface.co/">Hugging Face</a> Transformers & Diffusers<br>
+                <a href="https://github.com/antono4/AI">Open Source on GitHub</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
