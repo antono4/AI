@@ -23,8 +23,8 @@ Production-ready AI Video Generator using Hugging Face Transformers and Diffuser
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ai-video-generator.git
-cd ai-video-generator
+git clone https://github.com/antono4/AI.git
+cd AI
 
 # Create virtual environment
 python -m venv venv
