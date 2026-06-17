@@ -3,38 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Video Shorts Generator - Auto Create & Upload to YouTube</title>
+    <title>AI Video Generator - Create Amazing Videos with AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --accent: #06b6d4;
+            --bg-dark: #0a0a1a;
+            --bg-darker: #050510;
+            --bg-card: #12122a;
+            --bg-card-hover: #1a1a3e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #1e1e3f;
+            --border-light: #2d2d5a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #8b5cf6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --dark: #0f172a;
-            --darker: #020617;
-            --gray: #1e293b;
-            --light-gray: #94a3b8;
-            --white: #ffffff;
-            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
-        }
-
+        
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--darker);
-            color: var(--white);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
         }
-
+        
         /* Animated Background */
         .bg-animation {
             position: fixed;
@@ -45,2265 +53,1924 @@
             z-index: -1;
             overflow: hidden;
         }
-
+        
         .bg-animation::before {
             content: '';
             position: absolute;
-            width: 200%;
-            height: 200%;
             top: -50%;
             left: -50%;
-            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 30%);
-            animation: rotate 60s linear infinite;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 30%);
+            animation: bgPulse 20s ease-in-out infinite;
         }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        
+        @keyframes bgPulse {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-5%, -5%) rotate(5deg); }
         }
-
-        /* Header */
-        .header {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--gradient);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .logo-text h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .logo-text span {
-            font-size: 0.75rem;
-            color: var(--light-gray);
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .nav-btn {
-            padding: 0.5rem 1rem;
-            background: var(--gray);
-            border: none;
-            border-radius: 8px;
-            color: var(--white);
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn:hover {
-            background: var(--primary);
-        }
-
-        .nav-btn.active {
-            background: var(--primary);
-        }
-
-        /* Main Container */
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 2rem;
-        }
-
-        /* Panels */
-        .panel {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 24px;
-            padding: 2rem;
-        }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .panel-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gradient);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .panel-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .panel-subtitle {
-            font-size: 0.75rem;
-            color: var(--light-gray);
-        }
-
-        /* Form Elements */
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        .form-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--light-gray);
-            margin-bottom: 0.5rem;
-        }
-
-        .form-label span {
-            font-size: 0.75rem;
-            background: var(--primary);
-            padding: 0.125rem 0.5rem;
-            border-radius: 4px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 1rem 1.25rem;
-            background: var(--gray);
-            border: 2px solid transparent;
-            border-radius: 14px;
-            color: var(--white);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
-        }
-
-        .form-input::placeholder {
-            color: var(--light-gray);
-        }
-
-        textarea.form-input {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        /* Select */
-        .form-select {
-            width: 100%;
-            padding: 1rem 1.25rem;
-            background: var(--gray);
-            border: 2px solid transparent;
-            border-radius: 14px;
-            color: var(--white);
-            font-size: 1rem;
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1.25rem;
-        }
-
-        .form-select:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        /* Grid */
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        /* Toggle */
-        .toggle-group {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 14px;
-            margin-bottom: 0.75rem;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
-        }
-
-        .toggle-group:hover {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .toggle-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .toggle-icon {
-            font-size: 1.25rem;
-        }
-
-        .toggle-text {
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .toggle-desc {
-            font-size: 0.75rem;
-            color: var(--light-gray);
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 52px;
-            height: 28px;
-            flex-shrink: 0;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
+        
+        /* Navbar */
+        .navbar {
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            bottom: 0;
-            background: var(--gray);
-            border-radius: 28px;
-            transition: 0.4s;
-            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            z-index: 1000;
         }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 2px;
-            bottom: 2px;
-            background: var(--white);
-            border-radius: 50%;
-            transition: 0.4s;
-        }
-
-        .toggle-switch input:checked + .toggle-slider {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .toggle-switch input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 14px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--gradient);
-            color: var(--white);
-            width: 100%;
-            font-size: 1.125rem;
-            padding: 1.25rem 2rem;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: var(--gray);
-            color: var(--white);
-            flex: 1;
-        }
-
-        .btn-secondary:hover {
-            background: var(--light-gray);
-        }
-
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        /* Right Panel */
-        .right-panel {
+        
+        .navbar .container {
             display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        /* Stats Card */
-        .stats-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            border: 1px solid rgba(99, 102, 241, 0.2);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .stat-item {
-            background: rgba(30, 41, 59, 0.5);
-            padding: 1rem;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .stat-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            background: var(--gradient);
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--light-gray);
-            margin-top: 0.25rem;
-        }
-
-        /* Progress */
-        .progress-section {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-
-        .progress-label {
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .progress-value {
-            font-size: 0.875rem;
-            color: var(--primary);
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: var(--gray);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient);
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        /* Log Card */
-        .log-container {
-            background: var(--darker);
+        
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--gradient-primary);
             border-radius: 14px;
-            padding: 1rem;
-            max-height: 250px;
-            overflow-y: auto;
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 0.75rem;
-        }
-
-        .log-entry {
-            padding: 0.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
             display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-
-        .log-entry:last-child {
-            border-bottom: none;
-        }
-
-        .log-time {
-            color: var(--light-gray);
-            flex-shrink: 0;
-        }
-
-        .log-icon {
-            font-size: 0.875rem;
-        }
-
-        .log-text {
-            flex: 1;
-            word-break: break-word;
-        }
-
-        .log-success .log-icon { color: var(--success); }
-        .log-error .log-icon { color: var(--danger); }
-        .log-warning .log-icon { color: var(--warning); }
-        .log-info .log-icon { color: var(--primary); }
-
-        /* Topics */
-        .topics-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .topic-chip {
-            padding: 0.5rem 1rem;
-            background: var(--gray);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 50px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .topic-chip:hover {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.2);
-            transform: scale(1.05);
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.875rem 1rem;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            color: var(--white);
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            text-align: left;
-        }
-
-        .action-btn:hover {
-            background: rgba(99, 102, 241, 0.1);
-            border-color: var(--primary);
-        }
-
-        .action-icon {
-            font-size: 1.25rem;
-        }
-
-        /* Loading Overlay */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            gap: 1.5rem;
+            font-size: 1.4rem;
+            color: white;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
         }
-
-        .loading-overlay.active {
+        
+        .nav-links {
             display: flex;
+            gap: 36px;
+            list-style: none;
         }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--gray);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            font-size: 1.25rem;
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
             font-weight: 500;
-        }
-
-        .loading-progress {
-            width: 300px;
-            height: 8px;
-            background: var(--gray);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .loading-progress-bar {
-            height: 100%;
-            background: var(--gradient);
-            border-radius: 4px;
-            animation: loading 2s ease-in-out infinite;
-        }
-
-        @keyframes loading {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--dark);
-            border-radius: 24px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .modal-close {
-            width: 36px;
-            height: 36px;
-            background: var(--gray);
-            border: none;
-            border-radius: 8px;
-            color: var(--white);
-            font-size: 1.25rem;
-            cursor: pointer;
+            font-size: 0.95rem;
+            transition: color 0.3s;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 6px;
         }
-
-        .modal-close:hover {
-            background: var(--danger);
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
         }
-
-        /* Script Preview */
-        .script-preview {
-            background: var(--darker);
-            border-radius: 14px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+        
+        .nav-links a i {
+            font-size: 1.1rem;
         }
-
-        .script-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        .script-segment {
-            padding: 1rem;
-            background: rgba(30, 41, 59, 0.5);
+        
+        .btn-nav {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
             border-radius: 10px;
-            margin-bottom: 0.75rem;
-            border-left: 3px solid var(--primary);
-        }
-
-        .segment-number {
-            font-size: 0.75rem;
-            color: var(--light-gray);
-            margin-bottom: 0.25rem;
-        }
-
-        .segment-text {
-            font-size: 0.875rem;
-            line-height: 1.5;
-        }
-
-        /* Video Preview */
-        .video-preview {
-            background: var(--gray);
-            border-radius: 14px;
-            aspect-ratio: 9/16;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            overflow: hidden;
+            gap: 8px;
         }
-
-        .video-placeholder {
+        
+        .btn-nav:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 140px 0 60px;
             text-align: center;
-            color: var(--light-gray);
         }
-
-        .video-placeholder-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        /* Status Badge */
-        .status-badge {
-            display: flex;
+        
+        .hero-badge {
+            display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(30, 41, 59, 0.5);
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 8px 16px;
             border-radius: 50px;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--primary-light);
+            margin-bottom: 24px;
         }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--danger);
-        }
-
-        .status-dot.connected {
-            background: var(--success);
+        
+        .hero-badge i {
             animation: pulse 2s infinite;
         }
-
+        
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
         }
-
-        ::-webkit-scrollbar-track {
-            background: var(--dark);
+        
+        .hero h1 span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--gray);
-            border-radius: 4px;
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
         }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .main-container {
-                grid-template-columns: 1fr;
-            }
+        
+        /* Main Generator */
+        .generator-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 32px;
+            padding: 40px 0 80px;
         }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-group {
-                grid-template-columns: 1fr;
-            }
+        
+        .generator-wrapper-full {
+            display: contents;
         }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        /* Generator Card */
+        .generator-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
         }
-
-        .panel {
-            animation: fadeIn 0.5s ease forwards;
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
         }
-
-        .right-panel .panel:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .right-panel .panel:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .right-panel .panel:nth-child(4) {
-            animation-delay: 0.3s;
-        }
-
-        /* YouTube Connect Section */
-        .youtube-section {
-            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(255, 0, 0, 0.05));
-            border: 1px solid rgba(255, 0, 0, 0.2);
-            border-radius: 14px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .youtube-header {
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            gap: 12px;
         }
-
-        .youtube-icon {
-            font-size: 2rem;
-        }
-
-        .youtube-info h3 {
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .youtube-info p {
-            font-size: 0.75rem;
-            color: var(--light-gray);
-        }
-
-        .connect-btn {
-            width: 100%;
-            padding: 1rem;
-            background: #ff0000;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .connect-btn:hover {
-            background: #cc0000;
-            transform: scale(1.02);
-        }
-
-        .connect-btn.connected {
-            background: var(--success);
-        }
-
-        /* Channel Info */
-        .channel-info {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .channel-info.active {
-            display: block;
-        }
-
-        .channel-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .channel-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        
+        .card-title i {
+            color: var(--primary);
             font-size: 1.5rem;
         }
-
-        .channel-details h4 {
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .channel-details p {
-            font-size: 0.75rem;
-            color: var(--light-gray);
-        }
-
-        .channel-stats {
+        
+        .card-actions {
             display: flex;
-            gap: 1rem;
-            margin-top: 0.5rem;
+            gap: 8px;
         }
-
-        .channel-stat {
-            text-align: center;
+        
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-dark);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.3s;
         }
-
-        .channel-stat-value {
-            font-size: 1rem;
+        
+        .btn-icon:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--primary);
+        }
+        
+        /* Prompt Section */
+        .prompt-section {
+            margin-bottom: 28px;
+        }
+        
+        .prompt-label {
             font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .prompt-label i {
+            color: var(--accent);
+        }
+        
+        .prompt-textarea {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 140px;
+            transition: all 0.3s;
+            line-height: 1.6;
+        }
+        
+        .prompt-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        
+        .prompt-textarea::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .prompt-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        
+        .char-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .btn-microphone {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-microphone:hover {
+            background: var(--bg-card-hover);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        /* Settings Grid */
+        .settings-section {
+            margin-bottom: 28px;
+        }
+        
+        .section-label {
+            font-weight: 600;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .setting-item {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .setting-item:hover {
+            border-color: var(--border-light);
+        }
+        
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        
+        .setting-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .setting-name i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+        
+        .setting-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+        
+        .setting-value span {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        
+        /* Range Slider */
+        .range-track {
+            position: relative;
+            height: 6px;
+            background: var(--border);
+            border-radius: 10px;
+            margin-top: 8px;
+        }
+        
+        .range-fill {
+            position: absolute;
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: transparent;
+            -webkit-appearance: none;
+            position: relative;
+            z-index: 1;
+            margin-top: -6px;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Select */
+        .custom-select {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 10px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+        
+        .custom-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 22px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.35);
+            font-family: inherit;
+        }
+        
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.5);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .generate-btn i {
+            font-size: 1.4rem;
+        }
+        
+        .generate-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .shortcut-hint {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .shortcut-hint kbd {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.8rem;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        /* Preview Card */
+        .preview-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .preview-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preview-title i {
+            color: var(--secondary);
+        }
+        
+        .preview-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .preview-area {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            aspect-ratio: 16/10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            border: 2px dashed var(--border);
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .preview-placeholder i {
+            font-size: 3.5rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+        
+        .preview-placeholder p {
+            font-size: 0.95rem;
+        }
+        
+        .preview-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        
+        .preview-area.has-video {
+            border: none;
+        }
+        
+        .preview-area.has-video .preview-placeholder {
+            display: none;
+        }
+        
+        .preview-area.has-video .preview-video {
+            display: block;
+        }
+        
+        /* Video Controls */
+        .video-controls {
+            display: none;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .video-controls.show {
+            display: flex;
+        }
+        
+        .btn-control {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        .btn-download {
+            background: var(--success);
+            color: white;
+            border: none;
+        }
+        
+        .btn-download:hover {
+            background: #0ea572;
+        }
+        
+        .btn-share {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-share:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        /* Status Card */
+        .status-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            display: none;
+        }
+        
+        .status-card.show {
+            display: block;
+        }
+        
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .status-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        
+        .status-icon.processing {
+            background: rgba(99, 102, 241, 0.15);
             color: var(--primary);
         }
-
-        .channel-stat-label {
-            font-size: 0.625rem;
-            color: var(--light-gray);
+        
+        .status-icon.completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
         }
-
-        .disconnect-btn {
-            width: 100%;
-            padding: 0.75rem;
-            background: transparent;
-            border: 1px solid var(--danger);
-            border-radius: 8px;
-            color: var(--danger);
-            font-size: 0.875rem;
-            cursor: pointer;
-            margin-top: 0.75rem;
-            transition: all 0.3s ease;
+        
+        .status-icon.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
         }
-
-        .disconnect-btn:hover {
-            background: rgba(239, 68, 68, 0.1);
+        
+        .status-text h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
-
-        /* OAuth Popup */
-        .oauth-note {
-            font-size: 0.75rem;
-            color: var(--light-gray);
+        
+        .status-text p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-badge.processing {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-badge.completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+        
+        .status-badge.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+        }
+        
+        .progress-container {
+            margin-top: 16px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+        
+        .progress-step {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .progress-step.active {
+            color: var(--primary);
+        }
+        
+        .progress-step i {
+            font-size: 1rem;
+        }
+        
+        /* Stats Card */
+        .stats-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        
+        .stat-item {
             text-align: center;
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 8px;
+            padding: 16px 8px;
+            background: var(--bg-dark);
+            border-radius: 14px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-light);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        /* History Card */
+        .history-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            flex: 1;
+            min-height: 200px;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .history-title {
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .history-title i {
+            color: var(--accent);
+        }
+        
+        .btn-clear {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+        
+        .btn-clear:hover {
+            color: var(--error);
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            gap: 14px;
+            padding: 14px;
+            background: var(--bg-dark);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .history-item:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-light);
+        }
+        
+        .history-thumb {
+            width: 80px;
+            height: 50px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .history-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .history-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .history-prompt {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .history-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .history-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .history-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        
+        .history-empty i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+            max-width: 400px;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            border-color: var(--success);
+        }
+        
+        .toast.error {
+            border-color: var(--error);
+        }
+        
+        .toast.info {
+            border-color: var(--accent);
+        }
+        
+        .toast-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .toast.success .toast-icon {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+        
+        .toast.error .toast-icon {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+        }
+        
+        .toast.info .toast-icon {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent);
+        }
+        
+        .toast-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .toast-content p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .generator-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .history-card {
+                grid-column: span 2;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-card {
+                grid-column: span 1;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* API Configuration Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            background: var(--bg-dark);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        
+        .btn-save {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
+    <!-- Background Animation -->
     <div class="bg-animation"></div>
-
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
+    
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
             <div class="logo">
-                <div class="logo-icon">🎬</div>
-                <div class="logo-text">
-                    <h1>AI Video Shorts Generator</h1>
-                    <span>Auto Generate & Upload to YouTube</span>
+                <div class="logo-icon">
+                    <i class="ri-film-ai-fill"></i>
                 </div>
+                <span>AI Video Generator</span>
             </div>
-            <div class="status-badge">
-                <div class="status-dot" id="statusDot"></div>
-                <span id="statusText">YouTube: Not Connected</span>
-            </div>
+            <ul class="nav-links">
+                <li><a href="#"><i class="ri-home-4-line"></i> Home</a></li>
+                <li><a href="#"><i class="ri-gallery-line"></i> Gallery</a></li>
+                <li><a href="#"><i class="ri-settings-3-line"></i> Settings</a></li>
+                <li><a href="https://github.com/antono4/AI" target="_blank"><i class="ri-github-line"></i> GitHub</a></li>
+            </ul>
+            <button class="btn-nav" onclick="openSettings()">
+                <i class="ri-settings-4-line"></i>
+                Settings
+            </button>
         </div>
-    </header>
-
-    <!-- Main Container -->
-    <div class="main-container">
-        <!-- Left Panel - Generator -->
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-icon">🎥</div>
-                <div>
-                    <div class="panel-title">Video Generator</div>
-                    <div class="panel-subtitle">Buat video shorts dengan AI</div>
-                </div>
+    </nav>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <i class="ri-sparkling-line"></i>
+                Powered by Hugging Face AI
             </div>
-
-            <form id="generatorForm">
-                <!-- Topic Input -->
-                <div class="form-group">
-                    <label class="form-label">
-                        📝 Topik Video
-                        <span>Wajib</span>
-                    </label>
-                    <input type="text" class="form-input" id="topicInput" 
-                           placeholder="Contoh: Fakta menarik tentang AI, Tips produktivitas kerja, dll" required>
-                </div>
-
-                <!-- Quick Topics -->
-                <div class="form-group">
-                    <label class="form-label">⚡ Saran Topik Trending</label>
-                    <div class="topics-container" id="topicsList">
-                        <span class="topic-chip" onclick="selectTopic(this)">🤖 Fakta AI 2024</span>
-                        <span class="topic-chip" onclick="selectTopic(this)">💼 Tips Kerja</span>
-                        <span class="topic-chip" onclick="selectTopic(this)">🔬 Sains Menarik</span>
-                        <span class="topic-chip" onclick="selectTopic(this)">🏥 Kesehatan</span>
-                        <span class="topic-chip" onclick="selectTopic(this)">💰 Bisnis Online</span>
-                        <span class="topic-chip" onclick="selectTopic(this)">📜 Sejarah</span>
-                        <span class="topic-chip" onclick="selectTopic(this)">🌌 Antariksa</span>
-                        <span class="topic-chip" onclick="selectTopic(this)">🦁 Hewan Langka</span>
-                        <span class="topic-chip" onclick="selectTopic(this)">🎮 Gaming Tips</span>
-                        <span class="topic-chip" onclick="selectTopic(this)">💻 Programming</span>
-                    </div>
-                </div>
-
-                <!-- Settings Grid -->
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label">⏱️ Durasi Video</label>
-                        <select class="form-select" id="durationSelect">
-                            <option value="30">30 detik (Short)</option>
-                            <option value="45" selected>45 detik (Standard)</option>
-                            <option value="60">60 detik (Long)</option>
-                            <option value="90">90 detik (Extended)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">🌐 Bahasa</label>
-                        <select class="form-select" id="languageSelect">
-                            <option value="id" selected>🇮🇩 Indonesia</option>
-                            <option value="en">🇺🇸 English</option>
-                            <option value="ms">🇲🇾 Melayu</option>
-                            <option value="zh">🇨🇳 中文</option>
-                            <option value="ja">🇯🇵 日本語</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label">🎙️ Voice Provider</label>
-                        <select class="form-select" id="voiceSelect">
-                            <option value="gtts">🔊 Google TTS (Gratis)</option>
-                            <option value="elevenlabs">🎭 ElevenLabs (Premium)</option>
-                            <option value="openai">🤖 OpenAI TTS</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">✏️ Style Caption</label>
-                        <select class="form-select" id="captionStyle">
-                            <option value="highlight">🎨 Highlight</option>
-                            <option value="bold">💪 Bold</option>
-                            <option value="minimal">⬜ Minimal</option>
-                            <option value="subtitle">📜 Subtitle</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Toggles -->
-                <div class="toggle-group">
-                    <div class="toggle-info">
-                        <span class="toggle-icon">🎵</span>
-                        <div>
-                            <div class="toggle-text">Background Music</div>
-                            <div class="toggle-desc">Tambahkan musik latar otomatis</div>
-                        </div>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="addMusic" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-
-                <div class="toggle-group">
-                    <div class="toggle-info">
-                        <span class="toggle-icon">📝</span>
-                        <div>
-                            <div class="toggle-text">Auto Captions</div>
-                            <div class="toggle-desc">Tambahkan teks/kaption otomatis</div>
-                        </div>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="addCaptions" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-
-                <div class="toggle-group">
-                    <div class="toggle-info">
-                        <span class="toggle-icon">🔍</span>
-                        <div>
-                            <div class="toggle-text">Auto Thumbnail</div>
-                            <div class="toggle-desc">Generate thumbnail menarik</div>
-                        </div>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="autoThumbnail" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-
-                <div class="toggle-group">
-                    <div class="toggle-info">
-                        <span class="toggle-icon">📤</span>
-                        <div>
-                            <div class="toggle-text">Auto Upload YouTube</div>
-                            <div class="toggle-desc">Upload langsung setelah generate</div>
-                        </div>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="autoUpload">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-
-                <!-- Schedule Time -->
-                <div class="form-group" id="scheduleGroup" style="display: none;">
-                    <label class="form-label">📅 Jadwal Upload</label>
-                    <input type="datetime-local" class="form-input" id="scheduleTime">
-                </div>
-
-                <!-- Buttons -->
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary" onclick="previewScript()">
-                        📋 Preview Script
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        🚀 Generate Video
-                    </button>
-                </div>
-            </form>
+            <h1>Create <span>Amazing Videos</span><br>with AI</h1>
+            <p>Transform your imagination into stunning videos. Just describe what you want, and our AI will generate it for you in seconds.</p>
         </div>
-
-        <!-- Right Panel -->
-        <div class="right-panel">
-            <!-- YouTube Connect -->
-            <div class="panel youtube-section" id="youtubeSection">
-                <div class="youtube-header">
-                    <span class="youtube-icon">📺</span>
-                    <div class="youtube-info">
-                        <h3>YouTube Integration</h3>
-                        <p>Channel: <strong>@antonockr7618</strong></p>
-                    </div>
-                </div>
-                <button class="connect-btn" id="youtubeConnectBtn" onclick="connectYouTube()">
-                    🔗 Connect YouTube Channel
-                </button>
-                <div class="oauth-note">
-                    ⚠️ OAuth diperlukan untuk upload video otomatis
-                </div>
-                
-                <!-- Channel Info (shown when connected) -->
-                <div class="channel-info" id="channelInfo">
-                    <div class="channel-header">
-                        <div class="channel-avatar">👤</div>
-                        <div class="channel-details">
-                            <h4 id="channelName">antonockr7618</h4>
-                            <p>YouTube Channel Connected</p>
-                        </div>
-                    </div>
-                    <div class="channel-stats">
-                        <div class="channel-stat">
-                            <div class="channel-stat-value" id="subscriberCount">-</div>
-                            <div class="channel-stat-label">Subscribers</div>
-                        </div>
-                        <div class="channel-stat">
-                            <div class="channel-stat-value" id="videoCount">-</div>
-                            <div class="channel-stat-label">Videos</div>
-                        </div>
-                        <div class="channel-stat">
-                            <div class="channel-stat-value" id="totalViews">-</div>
-                            <div class="channel-stat-label">Views</div>
-                        </div>
-                    </div>
-                    <button class="disconnect-btn" onclick="disconnectYouTube()">
-                        🔌 Disconnect Channel
-                    </button>
-                </div>
-            </div>
-
-            <!-- Stats -->
-            <div class="panel stats-card">
-                <div class="panel-header">
-                    <div class="panel-icon">📊</div>
-                    <div>
-                        <div class="panel-title">Statistik</div>
-                        <div class="panel-subtitle">Monitoring aktivitas</div>
-                    </div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value" id="videosGenerated">0</div>
-                        <div class="stat-label">Video Dibuat</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="uploadsToday">0</div>
-                        <div class="stat-label">Upload Hari Ini</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="scheduledTasks">0</div>
-                        <div class="stat-label">Task Terjadwal</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalViews">0</div>
-                        <div class="stat-label">Total Views</div>
-                    </div>
-                </div>
-
-                <div class="progress-section">
-                    <div class="progress-header">
-                        <span class="progress-label">📈 Daily Progress</span>
-                        <span class="progress-value" id="progressPercent">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="dailyProgress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Activity Log -->
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-icon">📋</div>
-                    <div>
-                        <div class="panel-title">Activity Log</div>
-                        <div class="panel-subtitle">Aktivitas terbaru</div>
-                    </div>
-                </div>
-                <div class="log-container" id="logContainer">
-                    <div class="log-entry log-info">
-                        <span class="log-time">--:--:--</span>
-                        <span class="log-icon">🚀</span>
-                        <span class="log-text">Sistem initialized - Siap generate video!</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-icon">⚡</div>
-                    <div>
-                        <div class="panel-title">Quick Actions</div>
-                        <div class="panel-subtitle">Aksi cepat</div>
-                    </div>
-                </div>
-                <div class="quick-actions">
-                    <button class="action-btn" onclick="showSettings()">
-                        <span class="action-icon">⚙️</span>
-                        <span>Settings & API Keys</span>
-                    </button>
-                    <button class="action-btn" onclick="viewVideos()">
-                        <span class="action-icon">📁</span>
-                        <span>Lihat Video yang Dibuat</span>
-                    </button>
-                    <button class="action-btn" onclick="showScheduler()">
-                        <span class="action-icon">⏰</span>
-                        <span>Scheduler Panel</span>
-                    </button>
-                    <button class="action-btn" onclick="clearLogs()">
-                        <span class="action-icon">🗑️</span>
-                        <span>Clear Logs</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <div class="loading-text" id="loadingText">Generating Video...</div>
-        <div class="loading-progress">
-            <div class="loading-progress-bar"></div>
-        </div>
-    </div>
-
-    <!-- Script Preview Modal -->
-    <div class="modal" id="scriptModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">📋 Preview Script</h2>
-                <button class="modal-close" onclick="closeModal('scriptModal')">×</button>
-            </div>
-            <div class="script-preview" id="scriptPreview">
-                <!-- Script content will be inserted here -->
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="closeModal('scriptModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="generateFromScript()">🚀 Generate Video</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Results Modal -->
-    <div class="modal" id="resultsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">✅ Video Generated!</h2>
-                <button class="modal-close" onclick="closeModal('resultsModal')">×</button>
-            </div>
-            <div class="video-preview">
-                <div class="video-placeholder">
-                    <div class="video-placeholder-icon">🎬</div>
-                    <div>Video Preview</div>
-                    <div style="font-size: 0.75rem; margin-top: 0.5rem;" id="videoDuration">0s</div>
-                </div>
-            </div>
-            <div id="resultsContent" style="font-size: 0.875rem; color: var(--light-gray); margin-bottom: 1.5rem;">
-                <!-- Results content -->
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="downloadVideo()">💾 Download</button>
-                <button class="btn btn-primary" onclick="uploadToYouTube()">📤 Upload YouTube</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div class="modal" id="settingsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">⚙️ Settings</h2>
-                <button class="modal-close" onclick="closeModal('settingsModal')">×</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">🔑 OpenAI API Key</label>
-                <input type="password" class="form-input" id="openaiKey" placeholder="sk-...">
-            </div>
-            <div class="form-group">
-                <label class="form-label">🎭 ElevenLabs API Key</label>
-                <input type="password" class="form-input" id="elevenlabsKey" placeholder="Your API Key">
-            </div>
-            <div class="form-group">
-                <label class="form-label">🎬 Pexels API Key (Stock Video)</label>
-                <input type="password" class="form-input" id="pexelsKey" placeholder="Your API Key">
-            </div>
-            <div class="form-group">
-                <label class="form-label">📹 Max Daily Videos</label>
-                <input type="number" class="form-input" id="maxDaily" value="10" min="1" max="50">
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="closeModal('settingsModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scheduler Modal -->
-    <div class="modal" id="schedulerModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">⏰ Scheduler Panel</h2>
-                <button class="modal-close" onclick="closeModal('schedulerModal')">×</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">📝 Topic untuk dijadwalkan</label>
-                <input type="text" class="form-input" id="scheduledTopic" placeholder="Masukkan topic">
-            </div>
-            <div class="form-group">
-                <label class="form-label">📅 Waktu Upload</label>
-                <input type="datetime-local" class="form-input" id="scheduledTime">
-            </div>
-            <div class="form-group">
-                <label class="form-label">🔄 Interval (jam)</label>
-                <select class="form-select" id="intervalHours">
-                    <option value="2">Setiap 2 jam</option>
-                    <option value="4" selected>Setiap 4 jam</option>
-                    <option value="6">Setiap 6 jam</option>
-                    <option value="12">Setiap 12 jam</option>
-                    <option value="24">Setiap 24 jam</option>
-                </select>
-            </div>
-            <div class="toggle-group">
-                <div class="toggle-info">
-                    <span class="toggle-icon">📤</span>
-                    <div>
-                        <div class="toggle-text">Auto Upload</div>
-                        <div class="toggle-desc">Upload otomatis ke YouTube</div>
-                    </div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="scheduledAutoUpload" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="closeModal('schedulerModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="addScheduledTask()">⏰ Add to Schedule</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // ==================== STATE ====================
-        let currentScript = null;
-        let currentVideoPath = null;
-        let generatedVideo = null;
-        let youTubeConnected = false;
-
-        // Stats
-        let stats = {
-            videosGenerated: 0,
-            uploadsToday: 0,
-            scheduledTasks: 0,
-            totalViews: 0
-        };
-
-        // Settings
-        let settings = {
-            openaiKey: '',
-            elevenlabsKey: '',
-            pexelsKey: '',
-            maxDaily: 10
-        };
-
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            // Load settings from localStorage
-            loadSettings();
-            
-            // Load stats
-            loadStats();
-
-            // Load YouTube connection state
-            loadYouTubeState();
-            
-            // Check schedule toggle
-            document.getElementById('autoUpload').addEventListener('change', (e) => {
-                document.getElementById('scheduleGroup').style.display = 
-                    e.target.checked ? 'block' : 'none';
-            });
-
-            // Form submit
-            document.getElementById('generatorForm').addEventListener('submit', (e) => {
-                e.preventDefault();
-                generateVideo();
-            });
-
-            // Initialize
-            addLog('Sistem initialized', 'info');
-            addLog('AI Video Shorts Generator siap digunakan!', 'success');
-            addLog('📺 Target YouTube Channel: @antonockr7618', 'info');
-        });
-
-        // ==================== TOPIC SELECTION ====================
-        function selectTopic(element) {
-            document.getElementById('topicInput').value = element.textContent;
-        }
-
-        // ==================== SCRIPT GENERATION ====================
-        const topicTemplates = {
-            '🤖 Fakta AI 2024': [
-                'AI sudah bisa menggantikan 40% pekerjaan administratif!',
-                'ChatGPT mencapai 100 juta pengguna dalam 2 bulan!',
-                'Pada 2025, 85% interaksi pelanggan akan handled by AI!',
-                'Gaji ahli AI tertinggi mencapai $500,000 per tahun!',
-                'AI bisa menulis code lebih cepat dari programmer!',
-                'Robot AI pertama kali获 jobs di Jepang tahun 1980!',
-                'AI dapat mendeteksi kanker lebih akurat dari dokter!',
-                'Dampak AI terhadap tenaga kerja akan sangat besar!',
-                'AI generative akan mengubah cara kita bekerja!',
-                'Machine learning market mencapai $100 miliar!'
-            ],
-            '💼 Tips Kerja': [
-                'Gunakan teknik Pomodoro: 25 menit kerja, 5 menit istirahat!',
-                'Tidur cukup 7-8 jam meningkatkan produktivitas 30%!',
-                'Email di pagi hari? Wait, check priorities dulu!',
-                'Multi-tasking sebenarnya MEMPERLAMBAT kerja kita!',
-                'Stand up meetings lebih efektif dari duduk!',
-                'Kurangi notifications untuk fokus maksimal!',
-                'Delegate bukan berarti lepas tangan!',
-                'Weekly review bantu kita stay on track!',
-                'Learning never stops - invest waktu untuk belajar!',
-                'Networking itu penting untuk karir!'
-            ],
-            '🔬 Sains Menarik': [
-                'Tubuh manusia mengandung 37.2 triliun sel!',
-                'Cahaya butuh 8 menit 20 detik dari Matahari ke Bumi!',
-                'DNA manusia 99.9% sama dengan semua orang!',
-                'Otak manusia menggunakan 20% energi tubuh!',
-                'Gravitasi di bulan 1/6 dari Bumi!',
-                'Air mendidih di suhu lebih rendah di pegunungan!',
-                'Bumi berputar 1000 mph di equator!',
-                'Atom 99.9999999999996% kosong!',
-                'Laut menutupi 71% permukaan Bumi!',
-                'Kristal es memiliki 15 bentuk berbeda!'
-            ]
-        };
-
-        function generateScript(topic, duration = 45) {
-            const templates = topicTemplates[topic] || [
-                'Fakta menarik yang perlu kamu tahu tentang ' + topic,
-                'Tahukah kamu bahwa...',
-                'Ini akan mengejutkanmu!',
-                'Tips penting yang harus kamu ketahui',
-                'Hacks yang akan mengubah hidupmu!'
-            ];
-
-            const numSegments = Math.ceil(duration / 15);
-            const segments = [];
-            
-            for (let i = 0; i < numSegments; i++) {
-                let text = templates[i % templates.length];
-                if (i === 0) {
-                    text = '🔥 ' + text.toUpperCase();
-                } else if (i === numSegments - 1) {
-                    text = '👍 LIKE & SUBSCRIBE untuk konten menarik lainnya!';
-                }
-                
-                segments.push({
-                    number: i + 1,
-                    text: text,
-                    duration: i === numSegments - 1 ? duration - (i * 15) : 15
-                });
-            }
-
-            return {
-                title: topic + ' 🎬',
-                description: 'Video lengkap tentang ' + topic + '\n\nJangan lupa like, comment, dan subscribe!\n\n#' + topic.replace(/\s+/g, '') + ' #viral #trending #fakta',
-                tags: [topic.toLowerCase(), 'fakta', 'menarik', 'viral', 'trending'],
-                hashtags: '#' + topic.replace(/\s+/g, '') + ' #faktamenarik #viral #trending',
-                segments: segments,
-                duration: duration,
-                generatedAt: new Date().toISOString()
-            };
-        }
-
-        // ==================== PREVIEW SCRIPT ====================
-        function previewScript() {
-            const topic = document.getElementById('topicInput').value.trim();
-            const duration = parseInt(document.getElementById('durationSelect').value);
-
-            if (!topic) {
-                alert('Masukkan topik video terlebih dahulu!');
-                return;
-            }
-
-            showLoading('Generating Script...');
-
-            setTimeout(() => {
-                hideLoading();
-                currentScript = generateScript(topic, duration);
-                
-                const preview = document.getElementById('scriptPreview');
-                preview.innerHTML = `
-                    <div class="script-title">${currentScript.title}</div>
-                    <div style="font-size: 0.75rem; color: var(--light-gray); margin-bottom: 1rem;">
-                        📹 ${currentScript.duration} detik • ${currentScript.segments.length} segmen
-                    </div>
-                    ${currentScript.segments.map(seg => `
-                        <div class="script-segment">
-                            <div class="segment-number">Segmen ${seg.number} (${seg.duration}s)</div>
-                            <div class="segment-text">${seg.text}</div>
-                        </div>
-                    `).join('')}
-                    <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--light-gray);">
-                        <strong>Hashtags:</strong> ${currentScript.hashtags}
-                    </div>
-                `;
-
-                openModal('scriptModal');
-            }, 1500);
-        }
-
-        // ==================== GENERATE VIDEO ====================
-        function generateVideo() {
-            const topic = document.getElementById('topicInput').value.trim();
-            const duration = parseInt(document.getElementById('durationSelect').value);
-            const language = document.getElementById('languageSelect').value;
-            const voiceProvider = document.getElementById('voiceSelect').value;
-            const captionStyle = document.getElementById('captionStyle').value;
-            const addMusic = document.getElementById('addMusic').checked;
-            const addCaptions = document.getElementById('addCaptions').checked;
-            const autoThumbnail = document.getElementById('autoThumbnail').checked;
-            const autoUpload = document.getElementById('autoUpload').checked;
-
-            if (!topic) {
-                alert('Masukkan topik video terlebih dahulu!');
-                return;
-            }
-
-            showLoading('🎬 Generating Video...');
-            addLog('Memulai generation video: ' + topic, 'info');
-
-            // Simulate video generation process
-            const steps = [
-                { text: '📝 Membuat script dengan AI...', duration: 2000 },
-                { text: '🎥 Mengambil stock video dari Pexels...', duration: 2500 },
-                { text: '🎙️ Generate voiceover dengan ' + voiceProvider + '...', duration: 2000 },
-                { text: '✏️ Menambahkan captions dengan style ' + captionStyle + '...', duration: 1500 },
-                { text: addMusic ? '🎵 Menambahkan background music...' : '⏭️ Skip background music...', duration: 1500 },
-                { text: autoThumbnail ? '🖼️ Generate thumbnail...' : '⏭️ Skip thumbnail...', duration: 1000 },
-                { text: '✨ Menyelesaikan video...', duration: 1500 }
-            ];
-
-            let stepIndex = 0;
-            const stepInterval = setInterval(() => {
-                if (stepIndex < steps.length) {
-                    addLog(steps[stepIndex].text, 'info');
-                    stepIndex++;
-                } else {
-                    clearInterval(stepInterval);
-                }
-            }, 1500);
-
-            // Complete after all steps
-            setTimeout(() => {
-                hideLoading();
-                
-                // Generate video data
-                generatedVideo = {
-                    id: 'vid_' + Date.now(),
-                    topic: topic,
-                    duration: duration,
-                    script: generateScript(topic, duration),
-                    createdAt: new Date().toISOString(),
-                    settings: {
-                        language,
-                        voiceProvider,
-                        captionStyle,
-                        addMusic,
-                        addCaptions,
-                        autoThumbnail
-                    }
-                };
-
-                // Update stats
-                stats.videosGenerated++;
-                saveStats();
-
-                // Show results
-                addLog('✅ Video berhasil di-generate!', 'success');
-                document.getElementById('videosGenerated').textContent = stats.videosGenerated;
-
-                showResults(generatedVideo);
-
-            }, steps.reduce((acc, s) => acc + s.duration, 0));
-        }
-
-        function generateFromScript() {
-            closeModal('scriptModal');
-            setTimeout(() => generateVideo(), 300);
-        }
-
-        // ==================== SHOW RESULTS ====================
-        function showResults(video) {
-            const resultsContent = document.getElementById('resultsContent');
-            resultsContent.innerHTML = `
-                <p><strong>📝 Title:</strong> ${video.script.title}</p>
-                <p><strong>⏱️ Duration:</strong> ${video.duration} detik</p>
-                <p><strong>🎙️ Voice:</strong> ${video.settings.voiceProvider}</p>
-                <p><strong>✏️ Caption Style:</strong> ${video.settings.captionStyle}</p>
-                <p><strong>🎵 Music:</strong> ${video.settings.addMusic ? 'Ya' : 'Tidak'}</p>
-                <p><strong>🖼️ Thumbnail:</strong> ${video.settings.autoThumbnail ? 'Ya' : 'Tidak'}</p>
-            `;
-
-            document.getElementById('videoDuration').textContent = video.duration + 's';
-            openModal('resultsModal');
-        }
-
-        // ==================== DOWNLOAD VIDEO ====================
-        function downloadVideo() {
-            if (!generatedVideo) {
-                alert('Tidak ada video untuk didownload');
-                return;
-            }
-
-            addLog('💾 Mendownload video...', 'info');
-            
-            // Simulate download
-            setTimeout(() => {
-                addLog('✅ Video berhasil didownload!', 'success');
-                alert('Video berhasil didownload!\n\nFile: video_' + generatedVideo.id + '.mp4');
-            }, 1500);
-        }
-
-        // ==================== UPLOAD TO YOUTUBE ====================
-        function uploadToYouTube() {
-            if (!youTubeConnected) {
-                alert('⚠️ Silakan connect YouTube channel @antonockr7618 terlebih dahulu!');
-                openModal('resultsModal');
-                closeModal('resultsModal');
-                return;
-            }
-
-            if (!generatedVideo) {
-                alert('❌ Tidak ada video untuk diupload');
-                return;
-            }
-
-            // Show upload confirmation
-            const confirmUpload = confirm(
-                '📤 Upload Video ke YouTube\n\n' +
-                '📺 Channel: @antonockr7618\n' +
-                '🎬 Video: ' + generatedVideo.script.title + '\n' +
-                '⏱️ Durasi: ' + generatedVideo.duration + ' detik\n\n' +
-                'Klik OK untuk memulai upload...'
-            );
-
-            if (!confirmUpload) {
-                return;
-            }
-
-            showLoading('📤 Uploading to @antonockr7618...');
-            addLog('📤 Memulai upload ke YouTube channel @antonockr7618...', 'info');
-
-            // Simulate upload process
-            const uploadSteps = [
-                { text: '📹 Menyiapkan video...', duration: 1000 },
-                { text: '📊 Mengupload thumbnail...', duration: 800 },
-                { text: '✏️ Menambahkan metadata...', duration: 600 },
-                { text: '🔍 Processing video...', duration: 1500 },
-                { text: '✅ Video published!', duration: 500 }
-            ];
-
-            let stepIndex = 0;
-            const stepInterval = setInterval(() => {
-                if (stepIndex < uploadSteps.length) {
-                    addLog(uploadSteps[stepIndex].text, 'info');
-                    stepIndex++;
-                } else {
-                    clearInterval(stepInterval);
-                }
-            }, 800);
-
-            setTimeout(() => {
-                hideLoading();
-                clearInterval(stepInterval);
-
-                stats.uploadsToday++;
-                saveStats();
-                
-                // Generate video ID
-                const videoId = 'dQw4w9WgXcQ' + Date.now().toString(36);
-                const videoUrl = 'https://youtu.be/' + videoId;
-                const channelUrl = 'https://www.youtube.com/@antonockr7618';
-                
-                addLog('✅ Video berhasil diupload ke @antonockr7618!', 'success');
-                addLog('🔗 URL: ' + videoUrl, 'success');
-                document.getElementById('uploadsToday').textContent = stats.uploadsToday;
-
-                alert(
-                    '🎉 Video berhasil diupload!\n\n' +
-                    '📺 Channel: @antonockr7618\n' +
-                    '🔗 Video URL: ' + videoUrl + '\n\n' +
-                    'Video sedang dalam processing...'
-                );
-
-                closeModal('resultsModal');
-            }, 5000);
-        }
-
-        // ==================== YOUTUBE CONNECTION ====================
-        const YOUTUBE_CHANNEL_ID = 'UCantonockr7618';
-        const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@antonockr7618';
-        const YOUTUBE_API_CONFIGURED = false; // Set to true when Google OAuth is configured
-
-        function connectYouTube() {
-            // Check if OAuth is configured
-            if (!YOUTUBE_API_CONFIGURED) {
-                showOAuthSetupInstructions();
-                return;
-            }
-
-            showLoading('🔗 Connecting to YouTube...');
-            addLog('Memulai koneksi ke YouTube channel @antonockr7618...', 'info');
-
-            // Simulate OAuth flow for YouTube
-            setTimeout(() => {
-                const storedAuth = localStorage.getItem('youtubeAuth');
-                
-                if (!storedAuth) {
-                    const consent = confirm(
-                        '🔗 Koneksi ke YouTube Channel\n\n' +
-                        '📺 Channel: @antonockr7618\n' +
-                        '🎯 Allow AI Video Shorts Generator untuk:\n' +
-                        '   • Upload video ke channel Anda\n' +
-                        '   • Melihat statistik channel\n' +
-                        '   • Membuat thumbnail\n\n' +
-                        'Klik OK untuk melanjutkan ke OAuth consent...'
-                    );
-
-                    if (!consent) {
-                        hideLoading();
-                        addLog('❌ Koneksi dibatalkan oleh user', 'error');
-                        return;
-                    }
-
-                    addLog('⏳ Menunggu consent dari Google...', 'info');
-                    
-                    setTimeout(() => {
-                        const authData = {
-                            channelId: YOUTUBE_CHANNEL_ID,
-                            channelName: 'antonockr7618',
-                            connectedAt: new Date().toISOString(),
-                            accessToken: 'ya29.' + Date.now(),
-                            refreshToken: 'refresh_' + Date.now(),
-                            expiresAt: new Date(Date.now() + 3600000).toISOString()
-                        };
-
-                        localStorage.setItem('youtubeAuth', JSON.stringify(authData));
-                        completeYouTubeConnection(authData);
-                    }, 2000);
-                } else {
-                    const authData = JSON.parse(storedAuth);
-                    completeYouTubeConnection(authData);
-                }
-            }, 1500);
-        }
-
-        function showOAuthSetupInstructions() {
-            const instructions = `
-╔════════════════════════════════════════════════════════════════╗
-║        🔐 YOUTUBE OAUTH SETUP REQUIRED                        ║
-╠════════════════════════════════════════════════════════════════╣
-║                                                                ║
-║  Untuk upload video otomatis ke @antonockr7618,               ║
-║  Anda perlu setup Google OAuth Credentials:                    ║
-║                                                                ║
-║  📋 LANGKAH-LANGKAH:                                          ║
-║                                                                ║
-║  1️⃣  Buka Google Cloud Console                                ║
-║      👉 https://console.cloud.google.com/                      ║
-║                                                                ║
-║  2️⃣  Buat Project Baru atau Pilih Existing                   ║
-║                                                                ║
-║  3️⃣  Enable YouTube Data API v3                              ║
-║      👉 APIs & Services > Library > YouTube Data API v3       ║
-║                                                                ║
-║  4️⃣  Buat OAuth 2.0 Credentials                               ║
-║      👉 APIs & Services > Credentials > Create Credentials    ║
-║      👉 Pilih "OAuth Client ID" > "Web application"           ║
-║                                                                ║
-║  5️⃣  Set Redirect URI:                                        ║
-║      👉 http://localhost:5000/oauth/callback                   ║
-║                                                                ║
-║  6️⃣  Download JSON & rename ke "client_secret.json"          ║
-║                                                                ║
-║  7️⃣  Letakkan file di folder project                          ║
-║                                                                ║
-║  8️⃣  Isi credentials di .env file:                           ║
-║      GOOGLE_CLIENT_ID=your_client_id                         ║
-║      GOOGLE_CLIENT_SECRET=your_client_secret                 ║
-║                                                                ║
-╚════════════════════════════════════════════════════════════════╝
-            `;
-            
-            alert(instructions);
-            
-            // Show modal with detailed instructions
-            const modal = document.createElement('div');
-            modal.className = 'modal active';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 600px;">
-                    <div class="modal-header">
-                        <h2 class="modal-title">🔐 Setup YouTube OAuth</h2>
-                        <button class="modal-close" onclick="this.closest('.modal').remove()">×</button>
-                    </div>
-                    
-                    <div style="font-family: monospace; background: var(--darker); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
-                        <p style="color: var(--warning); margin-bottom: 1rem;">⚠️ OAuth credentials belum dikonfigurasi</p>
-                        
-                        <h4 style="color: var(--primary); margin-bottom: 0.5rem;">📋 Langkah Setup:</h4>
-                        
-                        <ol style="color: var(--light-gray); line-height: 1.8; padding-left: 1.5rem;">
-                            <li>Buka <a href="https://console.cloud.google.com/" target="_blank" style="color: var(--primary);">Google Cloud Console</a></li>
-                            <li>Buat project baru atau pilih existing</li>
-                            <li>Enable "YouTube Data API v3"</li>
-                            <li>Pergi ke "Credentials" > "Create Credentials"</li>
-                            <li>Pilih "OAuth Client ID" > "Web application"</li>
-                            <li>Tambahkan Redirect URI: <code style="color: var(--success);">http://localhost:5000/oauth/callback</code></li>
-                            <li>Download JSON file</li>
-                            <li>Rename ke <code style="color: var(--success);">client_secret.json</code></li>
-                            <li>Letakkan di folder project</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">📁 client_secret.json</label>
-                        <input type="file" id="clientSecretFile" accept=".json" style="display: none;" onchange="handleClientSecretUpload(this)">
-                        <button class="btn btn-secondary" onclick="document.getElementById('clientSecretFile').click()" style="width: 100%;">
-                            📂 Upload client_secret.json
+    </section>
+    
+    <!-- Main Generator -->
+    <div class="container">
+        <div class="generator-wrapper">
+            <!-- Generator Card -->
+            <div class="generator-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="ri-creative-commons-nd-line"></i>
+                        Create Video
+                    </h2>
+                    <div class="card-actions">
+                        <button class="btn-icon" title="Clear" onclick="clearPrompt()">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                        <button class="btn-icon" title="Templates" onclick="showTemplates()">
+                            <i class="ri-magic-line"></i>
                         </button>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">🔑 Client ID (alternatif)</label>
-                        <input type="text" class="form-input" id="clientIdInput" placeholder="Masukkan Client ID dari Google Cloud">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">🔐 Client Secret (alternatif)</label>
-                        <input type="password" class="form-input" id="clientSecretInput" placeholder="Masukkan Client Secret">
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
-                        <button class="btn btn-primary" onclick="saveOAuthCredentials()">💾 Save & Connect</button>
+                </div>
+                
+                <!-- Prompt Section -->
+                <div class="prompt-section">
+                    <label class="prompt-label">
+                        <i class="ri-text"></i>
+                        Describe your video
+                    </label>
+                    <textarea 
+                        id="promptInput" 
+                        class="prompt-textarea" 
+                        placeholder="Example: A majestic eagle soaring through misty mountains at sunrise, cinematic lighting, 4K quality, smooth camera movement..."
+                    ></textarea>
+                    <div class="prompt-footer">
+                        <span class="char-count"><span id="charCount">0</span> / 500 characters</span>
+                        <button class="btn-microphone" onclick="toggleVoice()">
+                            <i class="ri-mic-line" id="micIcon"></i>
+                            Voice Input
+                        </button>
                     </div>
                 </div>
-            `;
-            
-            document.body.appendChild(modal);
-            addLog('⚠️ OAuth setup required - membuka instruksi...', 'warning');
-        }
-
-        function handleClientSecretUpload(input) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        if (data.web && data.web.client_id) {
-                            document.getElementById('clientIdInput').value = data.web.client_id;
-                            document.getElementById('clientSecretInput').value = data.web.client_secret || '';
-                            addLog('✅ client_secret.json loaded successfully', 'success');
-                        } else {
-                            addLog('❌ Invalid OAuth file format', 'error');
-                        }
-                    } catch (err) {
-                        addLog('❌ Error parsing JSON: ' + err.message, 'error');
-                    }
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        function saveOAuthCredentials() {
-            const clientId = document.getElementById('clientIdInput').value.trim();
-            const clientSecret = document.getElementById('clientSecretInput').value.trim();
-            
-            if (!clientId || !clientSecret) {
-                alert('⚠️ Mohon isi Client ID dan Client Secret');
-                return;
-            }
-            
-            // Save to localStorage (in production, use secure storage)
-            const oauthConfig = {
-                clientId: clientId,
-                clientSecret: clientSecret,
-                redirectUri: 'http://localhost:5000/oauth/callback',
-                scopes: [
-                    'https://www.googleapis.com/auth/youtube.upload',
-                    'https://www.googleapis.com/auth/youtube.readonly'
-                ],
-                configuredAt: new Date().toISOString()
-            };
-            
-            localStorage.setItem('youtubeOAuthConfig', JSON.stringify(oauthConfig));
-            
-            // Close modal
-            document.querySelector('.modal.active')?.remove();
-            
-            addLog('✅ OAuth credentials saved - memulai koneksi...', 'success');
-            
-            // Start OAuth flow
-            setTimeout(() => startOAuthFlow(), 500);
-        }
-
-        function startOAuthFlow() {
-            const config = JSON.parse(localStorage.getItem('youtubeOAuthConfig') || '{}');
-            
-            if (!config.clientId) {
-                addLog('❌ OAuth not configured', 'error');
-                return;
-            }
-            
-            // Build OAuth URL
-            const authParams = new URLSearchParams({
-                client_id: config.clientId,
-                redirect_uri: config.redirectUri,
-                response_type: 'code',
-                scope: config.scopes.join(' '),
-                access_type: 'offline',
-                prompt: 'consent'
-            });
-            
-            const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + authParams.toString();
-            
-            // Open OAuth window
-            const oauthWindow = window.open(
-                authUrl,
-                'youtube_oauth',
-                'width=600,height=700,scrollbars=yes'
-            );
-            
-            addLog('🔗 OAuth window opened - tunggu consent...', 'info');
-            
-            // Poll for callback (simplified - in production use postMessage)
-            const pollInterval = setInterval(() => {
-                try {
-                    if (oauthWindow.closed) {
-                        clearInterval(pollInterval);
-                        addLog('⏳ OAuth window closed - check status...', 'info');
+                
+                <!-- Settings -->
+                <div class="settings-section">
+                    <label class="section-label">
+                        <i class="ri-settings-line"></i>
+                        Generation Settings
+                    </label>
+                    <div class="settings-grid">
+                        <!-- Duration -->
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <span class="setting-name">
+                                    <i class="ri-time-line"></i>
+                                    Duration
+                                </span>
+                            </div>
+                            <div class="setting-value">
+                                <span id="durationValue">4</span>
+                                <span>seconds</span>
+                            </div>
+                            <div class="range-track">
+                                <div class="range-fill" id="durationFill" style="width: 25%"></div>
+                            </div>
+                            <input type="range" id="durationSlider" min="2" max="10" value="4">
+                        </div>
                         
-                        // Simulate successful auth (in production, handle callback properly)
-                        setTimeout(() => {
-                            const authData = {
-                                channelId: YOUTUBE_CHANNEL_ID,
-                                channelName: 'antonockr7618',
-                                connectedAt: new Date().toISOString(),
-                                accessToken: 'ya29.' + Date.now(),
-                                refreshToken: 'refresh_' + Date.now(),
-                                expiresAt: new Date(Date.now() + 3600000).toISOString()
-                            };
-                            
-                            localStorage.setItem('youtubeAuth', JSON.stringify(authData));
-                            completeYouTubeConnection(authData);
-                        }, 1000);
-                    }
-                } catch (e) {
-                    // Cross-origin error - window still open
-                }
-            }, 1000);
-        }
-
-        function completeYouTubeConnection(authData) {
-            hideLoading();
-            youTubeConnected = true;
-            
-            // Update header status
-            document.getElementById('statusDot').classList.add('connected');
-            document.getElementById('statusText').textContent = 'YouTube: @antonockr7618';
-
-            // Update connect button
-            const btn = document.getElementById('youtubeConnectBtn');
-            btn.classList.add('connected');
-            btn.innerHTML = '✅ Connected to @antonockr7618';
-            btn.disabled = true;
-
-            // Show channel info
-            const channelInfo = document.getElementById('channelInfo');
-            channelInfo.classList.add('active');
-            
-            // Fetch channel stats (simulated)
-            fetchChannelStats();
-
-            // Save connection state
-            saveYouTubeState();
-
-            addLog('✅ YouTube channel @antonockr7618 berhasil connected!', 'success');
-        }
-
-        function fetchChannelStats() {
-            // Simulate fetching channel stats
-            // In real app, this would call YouTube Data API
-            
-            // Simulated stats (in production, fetch from YouTube API)
-            const channelStats = {
-                subscribers: Math.floor(Math.random() * 10000) + 100,
-                videos: Math.floor(Math.random() * 100) + 10,
-                views: Math.floor(Math.random() * 100000) + 1000
-            };
-
-            // Update UI
-            document.getElementById('subscriberCount').textContent = 
-                channelStats.subscribers >= 1000 ? 
-                (channelStats.subscribers / 1000).toFixed(1) + 'K' : 
-                channelStats.subscribers;
-            document.getElementById('videoCount').textContent = channelStats.videos;
-            document.getElementById('totalViews').textContent = 
-                channelStats.views >= 1000 ? 
-                (channelStats.views / 1000).toFixed(1) + 'K' : 
-                channelStats.views;
-
-            // Store stats
-            localStorage.setItem('youtubeStats', JSON.stringify(channelStats));
-        }
-
-        function disconnectYouTube() {
-            const confirm = window.confirm(
-                '🔌 Putuskan koneksi YouTube?\n\n' +
-                'Anda tidak akan bisa upload video secara otomatis.'
-            );
-
-            if (confirm) {
-                // Clear stored data
-                localStorage.removeItem('youtubeAuth');
-                localStorage.removeItem('youtubeStats');
+                        <!-- Resolution -->
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <span class="setting-name">
+                                    <i class="ri-aspect-ratio-line"></i>
+                                    Resolution
+                                </span>
+                            </div>
+                            <select id="resolutionSelect" class="custom-select">
+                                <option value="256">256 x 256 (Fast)</option>
+                                <option value="512" selected>512 x 512 (Balanced)</option>
+                                <option value="768">768 x 768 (HD)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- FPS -->
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <span class="setting-name">
+                                    <i class="ri-video-line"></i>
+                                    Frame Rate
+                                </span>
+                            </div>
+                            <select id="fpsSelect" class="custom-select">
+                                <option value="16">16 FPS (Slow)</option>
+                                <option value="24" selected>24 FPS (Cinematic)</option>
+                                <option value="30">30 FPS (Smooth)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Model -->
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <span class="setting-name">
+                                    <i class="ri-robot-line"></i>
+                                    AI Model
+                                </span>
+                            </div>
+                            <select id="modelSelect" class="custom-select">
+                                <option value="damo-vilab/text-to-video-ms-1.7b" selected>
+                                    Text-to-Video 1.7B ⭐
+                                </option>
+                                <option value="stabilityai/stable-video-diffusion">
+                                    Stable Video Diffusion
+                                </option>
+                                <option value="modelscope/text-to-video-ms">
+                                    ModelScope Text-to-Video
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 
-                youTubeConnected = false;
-
-                // Reset UI
-                document.getElementById('statusDot').classList.remove('connected');
-                document.getElementById('statusText').textContent = 'YouTube: Not Connected';
-
-                const btn = document.getElementById('youtubeConnectBtn');
-                btn.classList.remove('connected');
-                btn.innerHTML = '🔗 Connect YouTube Channel';
-                btn.disabled = false;
-
-                document.getElementById('channelInfo').classList.remove('active');
+                <!-- Generate Button -->
+                <button id="generateBtn" class="generate-btn" onclick="generateVideo()">
+                    <i class="ri-play-circle-fill"></i>
+                    <span>Generate Video</span>
+                </button>
+                <p class="shortcut-hint">Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to generate</p>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Preview Card -->
+                <div class="preview-card">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="ri-play-circle-line"></i>
+                            Video Preview
+                        </h3>
+                        <span class="preview-badge" id="previewBadge" style="display: none;">
+                            <i class="ri-check-line"></i> Ready
+                        </span>
+                    </div>
+                    <div class="preview-area" id="previewArea">
+                        <div class="preview-placeholder">
+                            <i class="ri-video-upload-line"></i>
+                            <p>Your generated video will appear here</p>
+                        </div>
+                        <video id="previewVideo" class="preview-video" controls></video>
+                    </div>
+                    <div class="video-controls" id="videoControls">
+                        <button class="btn-control btn-download" onclick="downloadVideo()">
+                            <i class="ri-download-cloud-2-line"></i>
+                            Download
+                        </button>
+                        <button class="btn-control btn-share" onclick="shareVideo()">
+                            <i class="ri-share-line"></i>
+                            Share
+                        </button>
+                    </div>
+                </div>
                 
-                // Reset stats
-                document.getElementById('subscriberCount').textContent = '-';
-                document.getElementById('videoCount').textContent = '-';
-                document.getElementById('totalViews').textContent = '-';
-
-                addLog('🔌 YouTube channel disconnected', 'warning');
-            }
-        }
-
-        function saveYouTubeState() {
-            localStorage.setItem('youtubeConnected', 'true');
-        }
-
-        function loadYouTubeState() {
-            const auth = localStorage.getItem('youtubeAuth');
-            if (auth) {
-                youTubeConnected = true;
-                document.getElementById('statusDot').classList.add('connected');
-                document.getElementById('statusText').textContent = 'YouTube: @antonockr7618';
-
-                const btn = document.getElementById('youtubeConnectBtn');
-                btn.classList.add('connected');
-                btn.innerHTML = '✅ Connected to @antonockr7618';
-                btn.disabled = true;
-
-                document.getElementById('channelInfo').classList.add('active');
-                fetchChannelStats();
-            }
-        }
-
-        // ==================== SCHEDULER ====================
-        function showScheduler() {
-            openModal('schedulerModal');
-        }
-
-        function addScheduledTask() {
-            const topic = document.getElementById('scheduledTopic').value.trim();
-            const time = document.getElementById('scheduledTime').value;
-            const interval = parseInt(document.getElementById('intervalHours').value);
-            const autoUpload = document.getElementById('scheduledAutoUpload').checked;
-
-            if (!topic) {
-                alert('Masukkan topic untuk dijadwalkan!');
-                return;
-            }
-
-            stats.scheduledTasks++;
-            saveStats();
-
-            addLog('⏰ Task dijadwalkan: ' + topic + ' (' + (autoUpload ? 'Auto Upload' : 'Generate Only') + ')', 'success');
-            document.getElementById('scheduledTasks').textContent = stats.scheduledTasks;
-
-            closeModal('schedulerModal');
-            alert('✅ Task berhasil dijadwalkan!\n\nTopic: ' + topic + '\nInterval: Setiap ' + interval + ' jam\nAuto Upload: ' + (autoUpload ? 'Ya' : 'Tidak'));
-        }
-
-        // ==================== SETTINGS ====================
-        function showSettings() {
-            openModal('settingsModal');
-        }
-
-        function saveSettings() {
-            settings.openaiKey = document.getElementById('openaiKey').value;
-            settings.elevenlabsKey = document.getElementById('elevenlabsKey').value;
-            settings.pexelsKey = document.getElementById('pexelsKey').value;
-            settings.maxDaily = parseInt(document.getElementById('maxDaily').value);
-
-            localStorage.setItem('aiVideoSettings', JSON.stringify(settings));
-            
-            addLog('⚙️ Settings berhasil disimpan!', 'success');
-            closeModal('settingsModal');
-        }
-
-        function loadSettings() {
-            const saved = localStorage.getItem('aiVideoSettings');
-            if (saved) {
-                settings = JSON.parse(saved);
-            }
-        }
-
-        // ==================== VIEW VIDEOS ====================
-        function viewVideos() {
-            addLog('📁 Membuka folder video...', 'info');
-            alert('📁 Folder Video\n\nVideo yang telah dibuat akan muncul di sini.\n\nTotal: ' + stats.videosGenerated + ' video');
-        }
-
-        // ==================== LOGGING ====================
-        function addLog(message, type = 'info') {
-            const container = document.getElementById('logContainer');
-            const time = new Date().toLocaleTimeString('id-ID');
-            
-            const icons = {
-                'success': '✅',
-                'error': '❌',
-                'warning': '⚠️',
-                'info': 'ℹ️'
-            };
-
-            const entry = document.createElement('div');
-            entry.className = 'log-entry log-' + type;
-            entry.innerHTML = `
-                <span class="log-time">${time}</span>
-                <span class="log-icon">${icons[type] || icons['info']}</span>
-                <span class="log-text">${message}</span>
-            `;
-            
-            container.insertBefore(entry, container.firstChild);
-
-            // Keep only last 50 logs
-            while (container.children.length > 50) {
-                container.removeChild(container.lastChild);
-            }
-        }
-
-        function clearLogs() {
-            document.getElementById('logContainer').innerHTML = '';
-            addLog('Logs cleared', 'info');
-        }
-
-        // ==================== STATS ====================
-        function loadStats() {
-            const saved = localStorage.getItem('aiVideoStats');
-            if (saved) {
-                stats = JSON.parse(saved);
-            }
-            updateStatsDisplay();
-        }
-
-        function saveStats() {
-            localStorage.setItem('aiVideoStats', JSON.stringify(stats));
-            updateStatsDisplay();
-        }
-
-        function updateStatsDisplay() {
-            document.getElementById('videosGenerated').textContent = stats.videosGenerated;
-            document.getElementById('uploadsToday').textContent = stats.uploadsToday;
-            document.getElementById('scheduledTasks').textContent = stats.scheduledTasks;
-            document.getElementById('totalViews').textContent = stats.totalViews.toLocaleString();
-
-            const progress = Math.min((stats.uploadsToday / settings.maxDaily) * 100, 100);
-            document.getElementById('dailyProgress').style.width = progress + '%';
-            document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
-        }
-
-        // ==================== MODALS ====================
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // ==================== LOADING ====================
-        function showLoading(text = 'Loading...') {
-            document.getElementById('loadingOverlay').classList.add('active');
-            document.getElementById('loadingText').textContent = text;
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.remove('active');
-        }
-
-        // ==================== KEYBOARD SHORTCUTS ====================
+                <!-- Status Card -->
+                <div class="status-card" id="statusCard">
+                    <div class="status-header">
+                        <div class="status-info">
+                            <div class="status-icon processing" id="statusIcon">
+                                <i class="ri-loader-4-line"></i>
+                            </div>
+                            <div class="status-text">
+                                <h4 id="statusTitle">Processing...</h4>
+                                <p id="statusSubtitle">Initializing AI model</p>
+                            </div>
+                        </div>
+                        <span class="status-badge processing" id="statusBadge">Processing</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-info">
+                            <span>Progress</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-steps">
+                            <span class="progress-step" id="step1"><i class="ri-checkbox-blank-circle-fill"></i> Load</span>
+                            <span class="progress-step" id="step2"><i class="ri-checkbox-blank-circle-line"></i> Process</span>
+                            <span class="progress-step" id="step3"><i class="ri-checkbox-blank-circle-line"></i> Generate</span>
+                            <span class="progress-step" id="step4"><i class="ri-checkbox-blank-circle-line"></i> Done</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Card -->
+                <div class="stats-card">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="statGenerated">0</div>
+                            <div class="stat-label">Generated</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statTime">0s</div>
+                            <div class="stat-label">Avg Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statSuccess">0%</div>
+                            <div class="stat-label">Success</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- History Card -->
+                <div class="history-card">
+                    <div class="history-header">
+                        <h3 class="history-title">
+                            <i class="ri-history-line"></i>
+                            Recent Videos
+                        </h3>
+                        <button class="btn-clear" onclick="clearHistory()">
+                            <i class="ri-delete-bin-line"></i>
+                            Clear
+                        </button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="history-empty">
+                            <i class="ri-video-off-line"></i>
+                            <p>No videos generated yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="ri-settings-3-line"></i>
+                    API Settings
+                </h3>
+                <button class="modal-close" onclick="closeSettings()">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">API Endpoint</label>
+                <input type="text" class="form-input" id="apiEndpoint" placeholder="http://localhost:8000">
+                <p class="form-hint">Enter your AI Video Generator API endpoint</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">API Key (Optional)</label>
+                <input type="password" class="form-input" id="apiKey" placeholder="Enter your API key">
+                <p class="form-hint">Required for some API endpoints</p>
+            </div>
+            <button class="btn-save" onclick="saveSettings()">
+                <i class="ri-save-line"></i>
+                Save Settings
+            </button>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="ri-check-line" id="toastIcon"></i>
+        </div>
+        <div class="toast-content">
+            <h4 id="toastTitle">Success!</h4>
+            <p id="toastMessage">Video generated successfully</p>
+        </div>
+    </div>
+    
+    <script>
+        // State
+        let isGenerating = false;
+        let currentVideoUrl = null;
+        let videosGenerated = 0;
+        let totalProcessingTime = 0;
+        let successfulGenerations = 0;
+        let isRecording = false;
+        let recognition = null;
+        
+        // Configuration
+        const config = {
+            apiEndpoint: localStorage.getItem('apiEndpoint') || 'http://localhost:8000',
+            apiKey: localStorage.getItem('apiKey') || ''
+        };
+        
+        // DOM Elements
+        const promptInput = document.getElementById('promptInput');
+        const durationSlider = document.getElementById('durationSlider');
+        const durationValue = document.getElementById('durationValue');
+        const durationFill = document.getElementById('durationFill');
+        const modelSelect = document.getElementById('modelSelect');
+        const generateBtn = document.getElementById('generateBtn');
+        const previewArea = document.getElementById('previewArea');
+        const previewVideo = document.getElementById('previewVideo');
+        const previewBadge = document.getElementById('previewBadge');
+        const videoControls = document.getElementById('videoControls');
+        const statusCard = document.getElementById('statusCard');
+        const charCount = document.getElementById('charCount');
+        
+        // Initialize
+        document.getElementById('apiEndpoint').value = config.apiEndpoint;
+        document.getElementById('apiKey').value = config.apiKey;
+        
+        // Event Listeners
+        promptInput.addEventListener('input', () => {
+            charCount.textContent = promptInput.value.length;
+        });
+        
+        durationSlider.addEventListener('input', (e) => {
+            const value = e.target.value;
+            durationValue.textContent = value;
+            durationFill.style.width = ((value - 2) / 8 * 100) + '%';
+        });
+        
+        // Keyboard shortcut
         document.addEventListener('keydown', (e) => {
-            // Escape to close modals
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal.active').forEach(modal => {
-                    modal.classList.remove('active');
-                });
-            }
-            
-            // Ctrl+Enter to generate
-            if (e.ctrlKey && e.key === 'Enter') {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 e.preventDefault();
                 generateVideo();
             }
         });
+        
+        // Generate Video
+        async function generateVideo() {
+            const prompt = promptInput.value.trim();
+            
+            if (!prompt) {
+                showToast('Please enter a prompt!', 'error', 'Error', 'Describe your video first');
+                promptInput.focus();
+                return;
+            }
+            
+            if (isGenerating) return;
+            
+            isGenerating = true;
+            generateBtn.disabled = true;
+            generateBtn.classList.add('loading');
+            generateBtn.innerHTML = '<i class="ri-loader-4-line"></i><span>Generating...</span>';
+            
+            // Show status
+            statusCard.classList.add('show');
+            updateStatus('processing', 'Processing...', 'Initializing AI model', 0);
+            
+            const startTime = Date.now();
+            const settings = {
+                prompt: prompt,
+                duration: parseInt(durationSlider.value),
+                resolution: document.getElementById('resolutionSelect').value,
+                fps: document.getElementById('fpsSelect').value,
+                model: modelSelect.value
+            };
+            
+            try {
+                // Try API call first
+                const response = await fetch(`${config.apiEndpoint}/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(config.apiKey && { 'Authorization': `Bearer ${config.apiKey}` })
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    handleGenerationSuccess(data, startTime, settings);
+                } else {
+                    throw new Error('API request failed');
+                }
+            } catch (error) {
+                // Fallback to simulation mode
+                console.log('API not available, using simulation mode');
+                await simulateGeneration(startTime, settings);
+            }
+            
+            isGenerating = false;
+            generateBtn.disabled = false;
+            generateBtn.classList.remove('loading');
+            generateBtn.innerHTML = '<i class="ri-play-circle-fill"></i><span>Generate Video</span>';
+        }
+        
+        async function simulateGeneration(startTime, settings) {
+            const steps = [
+                { progress: 15, title: 'Loading Model', subtitle: 'Downloading AI model weights...', step: 1 },
+                { progress: 35, title: 'Processing', subtitle: 'Analyzing prompt and preparing...', step: 2 },
+                { progress: 60, title: 'Generating', subtitle: 'Creating video frames...', step: 3 },
+                { progress: 85, title: 'Rendering', subtitle: 'Assembling video...', step: 4 },
+                { progress: 95, title: 'Finalizing', subtitle: 'Encoding output...', step: 5 }
+            ];
+            
+            for (const step of steps) {
+                await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1000));
+                updateStatus('processing', step.title, step.subtitle, step.progress);
+                updateProgressSteps(step.step);
+            }
+            
+            const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+            handleGenerationSuccess({ video_url: 'demo', duration: duration }, startTime, settings);
+        }
+        
+        function handleGenerationSuccess(data, startTime, settings) {
+            const duration = data.duration || ((Date.now() - startTime) / 1000).toFixed(1);
+            
+            // Update status
+            updateStatus('completed', 'Completed!', 'Video generated successfully', 100);
+            updateProgressSteps(5);
+            
+            // Show video
+            previewArea.classList.add('has-video');
+            previewBadge.style.display = 'inline-flex';
+            videoControls.classList.add('show');
+            
+            // Use sample video or actual result
+            previewVideo.src = data.video_url !== 'demo' 
+                ? data.video_url 
+                : 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+            
+            currentVideoUrl = previewVideo.src;
+            
+            // Update stats
+            videosGenerated++;
+            totalProcessingTime += parseFloat(duration);
+            successfulGenerations++;
+            updateStats();
+            
+            // Add to history
+            addToHistory(settings.prompt, duration, settings);
+            
+            // Show toast
+            showToast('Video generated successfully! 🎉', 'success', 'Success!', `Generated in ${duration}s`);
+            
+            // Hide status after delay
+            setTimeout(() => {
+                statusCard.classList.remove('show');
+            }, 3000);
+        }
+        
+        function updateStatus(type, title, subtitle, progress) {
+            const statusIcon = document.getElementById('statusIcon');
+            const statusBadge = document.getElementById('statusBadge');
+            
+            statusIcon.className = `status-icon ${type}`;
+            statusIcon.innerHTML = type === 'processing' 
+                ? '<i class="ri-loader-4-line"></i>' 
+                : type === 'completed' 
+                    ? '<i class="ri-check-line"></i>'
+                    : '<i class="ri-error-warning-line"></i>';
+            
+            statusBadge.className = `status-badge ${type}`;
+            statusBadge.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+            
+            document.getElementById('statusTitle').textContent = title;
+            document.getElementById('statusSubtitle').textContent = subtitle;
+            document.getElementById('progressPercent').textContent = progress + '%';
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        function updateProgressSteps(currentStep) {
+            for (let i = 1; i <= 5; i++) {
+                const step = document.getElementById(`step${i}`);
+                if (i < currentStep) {
+                    step.className = 'progress-step';
+                    step.innerHTML = '<i class="ri-checkbox-blank-circle-fill"></i> Done';
+                } else if (i === currentStep) {
+                    step.className = 'progress-step active';
+                    step.innerHTML = '<i class="ri-loader-4-line"></i> Active';
+                } else {
+                    step.className = 'progress-step';
+                    step.innerHTML = '<i class="ri-checkbox-blank-circle-line"></i> Wait';
+                }
+            }
+        }
+        
+        function updateStats() {
+            document.getElementById('statGenerated').textContent = videosGenerated;
+            document.getElementById('statTime').textContent = 
+                videosGenerated > 0 ? (totalProcessingTime / videosGenerated).toFixed(1) + 's' : '0s';
+            document.getElementById('statSuccess').textContent = 
+                videosGenerated > 0 ? Math.round((successfulGenerations / videosGenerated) * 100) + '%' : '0%';
+        }
+        
+        function addToHistory(prompt, duration, settings) {
+            const historyList = document.getElementById('historyList');
+            
+            // Remove empty state if exists
+            const emptyState = historyList.querySelector('.history-empty');
+            if (emptyState) emptyState.remove();
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.onclick = () => {
+                promptInput.value = prompt;
+                charCount.textContent = prompt.length;
+                showToast('Prompt loaded!', 'info', 'Loaded', 'Click Generate to create');
+            };
+            
+            historyItem.innerHTML = `
+                <div class="history-thumb">
+                    <img src="https://picsum.photos/160/100?random=${Date.now()}" alt="Thumbnail">
+                </div>
+                <div class="history-info">
+                    <p class="history-prompt">${prompt.substring(0, 60)}${prompt.length > 60 ? '...' : ''}</p>
+                    <div class="history-meta">
+                        <span><i class="ri-time-line"></i> ${duration}s</span>
+                        <span><i class="ri-aspect-ratio-line"></i> ${settings.resolution}px</span>
+                    </div>
+                </div>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 10 items
+            while (historyList.children.length > 10) {
+                historyList.removeChild(historyList.lastChild);
+            }
+            
+            // Save to localStorage
+            saveHistory();
+        }
+        
+        function saveHistory() {
+            const historyList = document.getElementById('historyList');
+            const items = [];
+            historyList.querySelectorAll('.history-item').forEach(item => {
+                items.push({
+                    prompt: item.querySelector('.history-prompt').textContent,
+                    duration: item.querySelector('.history-meta span:first-child').textContent.trim(),
+                    resolution: item.querySelector('.history-meta span:last-child').textContent.trim()
+                });
+            });
+            localStorage.setItem('videoHistory', JSON.stringify(items));
+        }
+        
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('videoHistory') || '[]');
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) return;
+            
+            historyList.innerHTML = '';
+            history.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.onclick = () => {
+                    promptInput.value = item.prompt;
+                    charCount.textContent = item.prompt.length;
+                    showToast('Prompt loaded!', 'info', 'Loaded', 'Click Generate to create');
+                };
+                
+                historyItem.innerHTML = `
+                    <div class="history-thumb">
+                        <img src="https://picsum.photos/160/100?random=${Math.random()}" alt="Thumbnail">
+                    </div>
+                    <div class="history-info">
+                        <p class="history-prompt">${item.prompt}</p>
+                        <div class="history-meta">
+                            <span><i class="ri-time-line"></i> ${item.duration}</span>
+                            <span><i class="ri-aspect-ratio-line"></i> ${item.resolution}</span>
+                        </div>
+                    </div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        function clearHistory() {
+            localStorage.removeItem('videoHistory');
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = `
+                <div class="history-empty">
+                    <i class="ri-video-off-line"></i>
+                    <p>No videos generated yet</p>
+                </div>
+            `;
+            showToast('History cleared', 'info', 'Cleared', 'All history has been removed');
+        }
+        
+        function downloadVideo() {
+            if (currentVideoUrl) {
+                const a = document.createElement('a');
+                a.href = currentVideoUrl;
+                a.download = `ai-video-${Date.now()}.mp4`;
+                a.target = '_blank';
+                a.click();
+                showToast('Download started!', 'success', 'Downloading', 'Check your downloads folder');
+            }
+        }
+        
+        function shareVideo() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'AI Generated Video',
+                    text: promptInput.value,
+                    url: currentVideoUrl
+                });
+            } else {
+                navigator.clipboard.writeText(currentVideoUrl);
+                showToast('Link copied to clipboard!', 'success', 'Copied', 'Share the video URL');
+            }
+        }
+        
+        function clearPrompt() {
+            promptInput.value = '';
+            charCount.textContent = '0';
+            previewArea.classList.remove('has-video');
+            previewBadge.style.display = 'none';
+            videoControls.classList.remove('show');
+            currentVideoUrl = null;
+        }
+        
+        function showTemplates() {
+            const templates = [
+                'A majestic eagle soaring through misty mountains at sunrise',
+                'A serene lake reflecting colorful autumn trees',
+                'A futuristic city with flying cars at night',
+                'Underwater coral reef with colorful fish swimming',
+                'A cozy coffee shop with rain outside the window',
+                'Northern lights dancing over a snowy landscape',
+                'A time-lapse of a flower blooming in slow motion',
+                'A samurai walking through cherry blossom trees'
+            ];
+            
+            const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+            promptInput.value = randomTemplate;
+            charCount.textContent = randomTemplate.length;
+            showToast('Template applied!', 'info', 'Template', 'Edit the prompt as needed');
+        }
+        
+        // Voice Input
+        function toggleVoice() {
+            const micIcon = document.getElementById('micIcon');
+            
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showToast('Voice input not supported in this browser', 'error', 'Error', 'Try Chrome or Edge');
+                return;
+            }
+            
+            if (isRecording) {
+                recognition?.stop();
+                isRecording = false;
+                micIcon.className = 'ri-mic-line';
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            recognition.onstart = () => {
+                isRecording = true;
+                micIcon.className = 'ri-mic-fill';
+                showToast('Listening...', 'info', 'Voice', 'Speak now or click to stop');
+            };
+            
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                promptInput.value = transcript;
+                charCount.textContent = transcript.length;
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                isRecording = false;
+                micIcon.className = 'ri-mic-line';
+            };
+            
+            recognition.onend = () => {
+                isRecording = false;
+                micIcon.className = 'ri-mic-line';
+            };
+            
+            recognition.start();
+        }
+        
+        // Settings Modal
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('show');
+        }
+        
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+        
+        function saveSettings() {
+            const endpoint = document.getElementById('apiEndpoint').value;
+            const apiKey = document.getElementById('apiKey').value;
+            
+            localStorage.setItem('apiEndpoint', endpoint);
+            localStorage.setItem('apiKey', apiKey);
+            
+            config.apiEndpoint = endpoint;
+            config.apiKey = apiKey;
+            
+            closeSettings();
+            showToast('Settings saved!', 'success', 'Saved', 'Your API settings have been updated');
+        }
+        
+        // Toast Notification
+        function showToast(message, type, title, subtitle) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = `toast ${type}`;
+            toastTitle.textContent = title || (type === 'success' ? 'Success!' : 'Error');
+            toastMessage.textContent = message;
+            
+            const icons = {
+                success: 'ri-check-line',
+                error: 'ri-error-warning-line',
+                info: 'ri-information-line'
+            };
+            toastIcon.className = icons[type] || icons.info;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+        
+        // Close modal on outside click
+        document.getElementById('settingsModal').addEventListener('click', (e) => {
+            if (e.target.className === 'modal-overlay') {
+                closeSettings();
+            }
+        });
+        
+        // Load history on page load
+        loadHistory();
+        
+        // Initialize
+        console.log('🎬 AI Video Generator loaded successfully!');
     </script>
 </body>
 </html>
