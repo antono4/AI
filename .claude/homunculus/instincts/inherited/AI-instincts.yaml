@@ -1,0 +1,407 @@
+# Instincts generated from https://github.com/antono4/AI
+# Generated: 2026-06-18T01:48:09.169Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: AI-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/antono4/AI
+---
+
+# AI Commit Length
+
+## Action
+
+Keep commit messages concise (~26 characters)
+
+## Evidence
+
+- Average commit message length: 26 chars
+- Based on 74 commits
+
+---
+id: AI-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/antono4/AI
+---
+
+# AI Naming Files
+
+## Action
+
+Use snake_case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: snake_case
+
+---
+id: AI-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/antono4/AI
+---
+
+# AI Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: AI-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/antono4/AI
+---
+
+# AI Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: AI-arch-type-based
+trigger: "when adding new code"
+confidence: 0.8
+domain: architecture
+source: repo-analysis
+source_repo: https://github.com/antono4/AI
+---
+
+# AI Arch Type Based
+
+## Action
+
+Place code in the appropriate type folder (components/, services/, utils/, etc.)
+
+## Evidence
+
+- Type-based module organization detected
+- Folders: api, models, cli, utils
+
+---
+id: AI-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/antono4/AI
+---
+
+# AI Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: AI-test-naming
+trigger: "when creating a test file"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/antono4/AI
+---
+
+# AI Test Naming
+
+## Action
+
+Name test files using the pattern: *.test.ts
+
+## Evidence
+
+- File pattern: *.test.ts
+- Consistent across test files
+
+---
+id: AI-workflow-file-removal-workflow
+trigger: "when doing file removal workflow"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/antono4/AI
+---
+
+# AI Workflow File Removal Workflow
+
+## Action
+
+Follow the file-removal-workflow workflow:
+1. Identify files that are obsolete or deprecated.
+2. Delete the files from the repository.
+3. Commit the deletions with a message indicating removal.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: *.py, *.md, *.json.example
+
+---
+id: AI-workflow-documentation-update-workflow
+trigger: "when doing documentation update workflow"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/antono4/AI
+---
+
+# AI Workflow Documentation Update Workflow
+
+## Action
+
+Follow the documentation-update-workflow workflow:
+1. Edit documentation files (e.g., README.md) to add or update information.
+2. Commit the changes with a descriptive message.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: README.md
+
+---
+id: ai-instinct-file-naming-snake-case
+trigger: "When creating or renaming a Python file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct File Naming Snake Case
+
+## Action
+
+Use snake_case for the file name
+
+## Evidence
+
+- Pattern in namingConventions.files: snake_case
+
+---
+id: ai-instinct-function-naming-camel-case
+trigger: "When defining a function in Python"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct Function Naming Camel Case
+
+## Action
+
+Use camelCase for the function name
+
+## Evidence
+
+- Pattern in namingConventions.functions: camelCase
+
+---
+id: ai-instinct-class-naming-pascal-case
+trigger: "When defining a class in Python"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct Class Naming Pascal Case
+
+## Action
+
+Use PascalCase for the class name
+
+## Evidence
+
+- Pattern in namingConventions.classes: PascalCase
+
+---
+id: ai-instinct-constant-naming-screaming-snake-case
+trigger: "When defining a constant in Python"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct Constant Naming Screaming Snake Case
+
+## Action
+
+Use SCREAMING_SNAKE_CASE for the constant name
+
+## Evidence
+
+- Pattern in namingConventions.constants: SCREAMING_SNAKE_CASE
+
+---
+id: ai-instinct-import-style-relative
+trigger: "When importing modules within the package"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct Import Style Relative
+
+## Action
+
+Use relative imports
+
+## Evidence
+
+- Pattern in importStyle: relative
+
+---
+id: ai-instinct-export-style-named
+trigger: "When exporting functions or classes from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct Export Style Named
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in exportStyle: named
+
+---
+id: ai-instinct-test-file-pattern
+trigger: "When creating a test file"
+confidence: 0.6
+domain: testing
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct Test File Pattern
+
+## Action
+
+Name the file with the pattern *.test.ts
+
+## Evidence
+
+- Pattern in testing.filePattern: *.test.ts
+
+---
+id: ai-instinct-test-type-unit
+trigger: "When writing tests"
+confidence: 0.6
+domain: testing
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct Test Type Unit
+
+## Action
+
+Write unit tests
+
+## Evidence
+
+- Pattern in testing.testTypes: unit
+
+---
+id: ai-instinct-git-commit-freeform
+trigger: "When making a commit"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct Git Commit Freeform
+
+## Action
+
+Write a freeform commit message, optionally starting with a type prefix (e.g., fix:, add:, remove:), with an average length of ~26 characters
+
+## Evidence
+
+- Seen in commit examples
+- Pattern in commits.type: freeform
+- Pattern in commits.averageLength: 26
+
+---
+id: ai-instinct-file-removal-workflow
+trigger: "When someone wants to remove code, configuration, or documentation files that are no longer needed"
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct File Removal Workflow
+
+## Action
+
+Identify obsolete or deprecated files, delete them, and commit the deletions with a message indicating removal
+
+## Evidence
+
+- file-removal-workflow detected
+- Seen in commit: Remove cli.py
+- Seen in commit: Remove README.md - index.html is now the landing page
+
+---
+id: ai-instinct-documentation-update-workflow
+trigger: "When someone wants to update or correct project documentation"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: antono4/AI
+---
+
+# Ai Instinct Documentation Update Workflow
+
+## Action
+
+Edit documentation files (e.g., README.md) to add or update information, then commit with a descriptive message
+
+## Evidence
+
+- documentation-update-workflow detected
+- Seen in commit: fix: Update clone URL in README
+
