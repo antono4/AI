@@ -1,5 +1,8 @@
 # 🎬 AI Video Generator
 
+> **Created by Antono**
+
+
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-00D084?style=for-the-badge" alt="Python">
   <img src="https://img.shields.io/badge/🤗%20Diffusers-F5D642?style=for-the-badge" alt="Hugging Face">
