@@ -1,1 +1,33 @@
-Last updated: 2026-11-04 08:43:14 WIB
+# AI
+
+
+
+## 📋 Overview
+
+This repository contains **43 files** and is built with the following technologies:
+
+HTML, Docker
+
+## 🚀 Quick Start
+
+```bash
+pip install -r requirements.txt
+python main.py
+```
+
+## ✨ Features
+
+- 🐳 Docker support
+- 🔧 Environment config included
+- 📝 Auto-generated documentation
+
+## 🛠️ Technologies
+
+HTML, Docker
+
+## 📄 License
+
+MIT License
+
+---
+*Last updated: 2026-11-04 10:20:12 WIB*
